@@ -36,6 +36,10 @@ results/**
 *.pkl
 results/**/scores.npz
 results/**/oof_train_scores.npz
+# Stage checkpoints are run state, not results: they carry the code fingerprint
+# of the run that wrote them and would abort any later run of 05 or 08.
+results/**/model_stage.json
+results/**/checkpoints/
 
 # Smoke runs are throwaway; they must not dirty the tree the chain checks.
 results/smoke_v4/

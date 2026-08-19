@@ -133,7 +133,26 @@ FORCE=1           # ignore existing checkpoints
 Individual runners accept environment overrides (`DATASETS`, `N_MAX`, `LC_N`, `*_ITER`,
 `EXPLAIN_CASES`, `N_BOOTSTRAP`, `OUTBASE`, `OUTDIR`) 
 
-### 4. Figures
+### 4. Re-running over the shipped results
+
+`results/` already holds the artefacts of the reported run, and most runners skip
+work they find finished. To recompute rather than inspect, choose one of:
+
+```bash
+# a) write somewhere else, leaving the shipped results untouched (recommended)
+OUTBASE=results/rerun python notebooks/05_fixed_split_all.py
+
+# b) recompute in place
+FORCE=1 AUDIT_FORCE=1 bash run_all_sodalab04.sh
+
+# c) start from nothing
+rm -rf results && bash run_all_sodalab04.sh
+```
+
+Stage checkpoints are deliberately not shipped: they carry the code fingerprint of
+the run that wrote them, so any later run would refuse to resume from them.
+
+### 5. Figures
 
 Both read `results/` only, so they run without any raw data:
 
