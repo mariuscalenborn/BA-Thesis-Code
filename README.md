@@ -40,7 +40,7 @@ accepting their terms). Download the four sources and place them exactly as foll
 | German Credit (Statlog) | UCI ML Repository, *Statlog (German Credit Data)* (Hofmann 1994) | `german.data` → `data/raw/south_german/german.data` |
 | Taiwan Credit Card Default | UCI ML Repository, *Default of Credit Card Clients* (Yeh & Lien 2009) | `default of credit card clients.xls` → `data/raw/taiwan/default of credit card clients.xls` |
 | Home Credit Default Risk | Kaggle competition *home-credit-default-risk* | `application_train.csv` → `data/raw/home_credit/application_train.csv` |
-| Lending Club | Kaggle dataset `wordsforthewise/lending-club` | `accepted_2007_to_2018Q4.csv` → `data/raw/lending_club/archive/accepted_2007_to_2018q4.csv/accepted_2007_to_2018Q4.csv` |
+| Lending Club | Kaggle dataset `wordsforthewise/lending-club` | `accepted_2007_to_2018Q4.csv` → `data/raw/lending_club/archive/` (notebook 04 accepts the unpacked Kaggle layout, the bare CSV, or a `.csv.gz`) |
 
 Use the **original** Statlog file `german.data` (Hofmann 1994), not Grömping's
 corrected South German Credit variant. Only `application_train.csv` is needed from the
