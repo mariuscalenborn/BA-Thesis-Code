@@ -1,0 +1,38 @@
+{
+  "dataset": "lending_club_oot",
+  "emp_implementation_version": "verbraken2014-hull-v4.1",
+  "loss_given_default_mixture": {
+    "density": 0.35,
+    "distribution": "Beta mixture per Verbraken et al. (2014)",
+    "p0": 0.55,
+    "p1": 0.1
+  },
+  "note": "The observed test default rate may be reported descriptively but must not replace prior_default_train inside the EMP calculation.",
+  "prior_default_train": 0.184252231413757,
+  "prior_non_default_train": 0.815747768586243,
+  "prior_source": "training partition, frozen before test access",
+  "roi": 0.13141985589265018,
+  "roi_provenance": "mean int_rate of the training window (issue_year <= 2015) / 100",
+  "thresholds": {
+    "CatBoost": {
+      "base_rate_threshold": 0.184252231413757,
+      "emp_cutoff": 0.6410421384104139,
+      "eta_oof": 0.17707737388575595
+    },
+    "EBM": {
+      "base_rate_threshold": 0.184252231413757,
+      "emp_cutoff": 0.6468956183402451,
+      "eta_oof": 0.17555183196663487
+    },
+    "LR": {
+      "base_rate_threshold": 0.184252231413757,
+      "emp_cutoff": 0.642146897507453,
+      "eta_oof": 0.17647319802554956
+    },
+    "XGBoost": {
+      "base_rate_threshold": 0.184252231413757,
+      "emp_cutoff": 0.6445376618831644,
+      "eta_oof": 0.17575709691659938
+    }
+  }
+}

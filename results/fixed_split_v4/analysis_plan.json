@@ -1,0 +1,36 @@
+{
+  "created_utc": "2026-07-31T22:49:46Z",
+  "datasets": [
+    "home_credit",
+    "lending_club",
+    "south_german",
+    "taiwan"
+  ],
+  "models": [
+    "LR",
+    "EBM",
+    "XGBoost",
+    "CatBoost"
+  ],
+  "permitted_analyses": {
+    "calibration_evaluation": "Brier score and raw-vs-calibrated comparison",
+    "calibration_sensitivity": "Prespecified sigmoid-versus-isotonic comparison",
+    "explanation_comparison": "Attributions and cross-model explanation agreement",
+    "fairness_probe": "Group-wise performance at the frozen base-rate threshold",
+    "learning_curves": "Dimension 3 subsample curves scored on the same test partition",
+    "out_of_time_robustness": "Separate temporal experiment on Lending Club",
+    "paired_bootstrap": "Paired stratified bootstrap intervals and pairwise deltas",
+    "primary_model_comparison": "Four-model comparison on the common test partition",
+    "protected_feature_ablation": "Prespecified secondary analysis without protected attributes",
+    "roi_sensitivity": "Economic sensitivity across the prespecified ROI grid"
+  },
+  "primary_analysis": "primary_model_comparison",
+  "rules": [
+    "The test partition is read only by analyses listed here.",
+    "No test-partition result may change preprocessing, hyperparameters, calibration, thresholds, metric definitions or model inclusion.",
+    "Analyses other than the primary comparison are prespecified secondary analyses and are reported as such.",
+    "Every access is appended to test_access_log.jsonl."
+  ],
+  "schema": "ba_project_analysis_plan",
+  "schema_version": 1
+}

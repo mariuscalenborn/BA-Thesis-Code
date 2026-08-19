@@ -1,0 +1,15 @@
+scikit-learn
+xgboost
+catboost==1.2.10
+interpret
+shap
+pandas
+numpy
+matplotlib
+seaborn
+jupyter
+ipykernel
+scipy
+imbalanced-learn
+kaggle
+tqdm

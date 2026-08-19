@@ -1,0 +1,38 @@
+{
+  "dataset": "south_german",
+  "emp_implementation_version": "verbraken2014-hull-v4.1",
+  "loss_given_default_mixture": {
+    "density": 0.35,
+    "distribution": "Beta mixture per Verbraken et al. (2014)",
+    "p0": 0.55,
+    "p1": 0.1
+  },
+  "note": "The observed test default rate may be reported descriptively but must not replace prior_default_train inside the EMP calculation.",
+  "prior_default_train": 0.3,
+  "prior_non_default_train": 0.7,
+  "prior_source": "training partition, frozen before test access",
+  "roi": 0.2644,
+  "roi_provenance": "Verbraken et al. (2014) baseline",
+  "thresholds": {
+    "CatBoost": {
+      "base_rate_threshold": 0.3,
+      "emp_cutoff": 0.6761433742801127,
+      "eta_oof": 0.15279684788649234
+    },
+    "EBM": {
+      "base_rate_threshold": 0.3,
+      "emp_cutoff": 0.7307587019695404,
+      "eta_oof": 0.16160726712811951
+    },
+    "LR": {
+      "base_rate_threshold": 0.3,
+      "emp_cutoff": 0.6567371937206308,
+      "eta_oof": 0.17518806234809325
+    },
+    "XGBoost": {
+      "base_rate_threshold": 0.3,
+      "emp_cutoff": 0.694012071898177,
+      "eta_oof": 0.1465949217992424
+    }
+  }
+}

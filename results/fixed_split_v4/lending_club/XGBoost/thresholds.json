@@ -1,0 +1,10 @@
+{
+  "base_rate_source": "training partition default rate",
+  "base_rate_threshold": 0.1996497194038726,
+  "code_fingerprint": "e6d9da67c49c83e098a461326ba5c835f7f605262c8917cb6a70eb3f63c4d236",
+  "emp_cutoff": 0.6286234576904173,
+  "emp_cutoff_source": "quantile 1-eta of five-fold cross-fitted raw training scores",
+  "eta_oof": 0.1934549398625601,
+  "model": "XGBoost",
+  "n_oof_predictions": 1076280
+}

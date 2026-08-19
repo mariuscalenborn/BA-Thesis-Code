@@ -1,0 +1,42 @@
+{
+  "all_originated_proxy_n": 2260668,
+  "denominator_definition": "accepted-loans records with parseable issue_d and term; used as the originated-loan proxy before the resolved-only target filter",
+  "feature_timing_caveat": "Rows marked included_with_timing_caveat require independent source documentation before claiming strict pre-pricing availability.",
+  "last_credit_pull_used_as_snapshot": false,
+  "model_drop_checks": [
+    {
+      "auxiliary_present_but_excluded": [
+        "int_rate",
+        "issue_year"
+      ],
+      "contract": "src/datasets.py::DATASETS['lending_club']",
+      "endogenous_dropped_at_export": [
+        "funded_amnt",
+        "grade",
+        "installment",
+        "sub_grade"
+      ],
+      "n_model_features": 81,
+      "required_exclusions_present": true,
+      "target_column": "target"
+    }
+  ],
+  "observed_max_last_credit_pull_d": "2019-04-01",
+  "outcome_snapshot": null,
+  "outcome_snapshot_source": "unavailable; contractual maturity intentionally not computed",
+  "processed_matches_raw_retained_count": true,
+  "processed_rows": 1345350,
+  "processed_source": "/home/mariusc/BA-Project-gpu/data/processed/v4/lending_club_full.csv",
+  "raw_rows_scanned": 2260701,
+  "raw_rows_with_invalid_issue_or_term": 33,
+  "raw_source": "/home/mariusc/BA-Project-gpu/data/raw/lending_club/archive/accepted_2007_to_2018Q4.csv.gz",
+  "raw_source_size_bytes": 392582231,
+  "resolved_target_retained_n": 1345350,
+  "resolved_target_retained_share": 0.5951117103440222,
+  "retained_status_definition": [
+    "Charged Off",
+    "Default",
+    "Fully Paid"
+  ],
+  "terminal_status_definition": "loan_status contains Fully Paid or Charged Off, or equals Default"
+}

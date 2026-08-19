@@ -1,0 +1,60 @@
+{
+  "code_fingerprint": "e6d9da67c49c83e098a461326ba5c835f7f605262c8917cb6a70eb3f63c4d236",
+  "model": "CatBoost",
+  "selection": {
+    "best_index": 8,
+    "best_params": {
+      "clf__estimator__depth": 4,
+      "clf__estimator__iterations": 941,
+      "clf__estimator__l2_leaf_reg": 3,
+      "clf__estimator__learning_rate": 0.05
+    },
+    "code_fingerprint": "e6d9da67c49c83e098a461326ba5c835f7f605262c8917cb6a70eb3f63c4d236",
+    "early_stopping": {
+      "patience": 50,
+      "per_fold_best_iteration": [
+        1332,
+        865,
+        1126,
+        940,
+        737
+      ],
+      "refit_rounds": 941,
+      "round_cap": 2000,
+      "rule": "median best iteration over the folds + 1"
+    },
+    "mean_validation_auc": 0.7536925326369873,
+    "model": "CatBoost",
+    "n_folds": 5,
+    "search": {
+      "class": "ESRandomizedSearch",
+      "n_candidates": 20,
+      "search_seed": 4203
+    },
+    "search_seconds": 554.4174065589905,
+    "std_validation_auc": 0.0025673315758140466,
+    "tie_break": {
+      "n_candidates": 20,
+      "n_tied_on_mean": 1,
+      "resolved_by": "mean",
+      "rule": "max mean roc_auc -> min std -> simpler configuration -> serialised order",
+      "tie_epsilon": 1e-06
+    }
+  },
+  "thresholds": {
+    "base_rate_source": "training partition default rate",
+    "base_rate_threshold": 0.08072908198107379,
+    "code_fingerprint": "e6d9da67c49c83e098a461326ba5c835f7f605262c8917cb6a70eb3f63c4d236",
+    "emp_cutoff": 0.8503251561999399,
+    "emp_cutoff_source": "quantile 1-eta of five-fold cross-fitted raw training scores",
+    "eta_oof": 0.015004731758068152,
+    "model": "CatBoost",
+    "n_oof_predictions": 246008
+  },
+  "timings": {
+    "refit_seconds": 4.7388410568237305,
+    "search_seconds": 554.4174065589905,
+    "total_seconds": 601.2697830200195
+  },
+  "written_utc": "2026-08-01T02:49:44Z"
+}

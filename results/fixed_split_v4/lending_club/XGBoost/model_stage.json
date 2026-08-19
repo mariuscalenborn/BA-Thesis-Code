@@ -1,0 +1,63 @@
+{
+  "code_fingerprint": "e6d9da67c49c83e098a461326ba5c835f7f605262c8917cb6a70eb3f63c4d236",
+  "model": "XGBoost",
+  "selection": {
+    "best_index": 21,
+    "best_params": {
+      "clf__estimator__colsample_bytree": 1.0,
+      "clf__estimator__gamma": 0,
+      "clf__estimator__learning_rate": 0.03,
+      "clf__estimator__max_depth": 6,
+      "clf__estimator__min_child_weight": 1,
+      "clf__estimator__n_estimators": 1762,
+      "clf__estimator__subsample": 0.8
+    },
+    "code_fingerprint": "e6d9da67c49c83e098a461326ba5c835f7f605262c8917cb6a70eb3f63c4d236",
+    "early_stopping": {
+      "patience": 50,
+      "per_fold_best_iteration": [
+        1761,
+        1783,
+        1629,
+        1734,
+        1791
+      ],
+      "refit_rounds": 1762,
+      "round_cap": 2000,
+      "rule": "median best iteration over the folds + 1"
+    },
+    "mean_validation_auc": 0.7279572697710566,
+    "model": "XGBoost",
+    "n_folds": 5,
+    "search": {
+      "class": "ESRandomizedSearch",
+      "n_candidates": 30,
+      "search_seed": 4203
+    },
+    "search_seconds": 2602.469878911972,
+    "std_validation_auc": 0.000646438222701179,
+    "tie_break": {
+      "n_candidates": 30,
+      "n_tied_on_mean": 1,
+      "resolved_by": "mean",
+      "rule": "max mean roc_auc -> min std -> simpler configuration -> serialised order",
+      "tie_epsilon": 1e-06
+    }
+  },
+  "thresholds": {
+    "base_rate_source": "training partition default rate",
+    "base_rate_threshold": 0.1996497194038726,
+    "code_fingerprint": "e6d9da67c49c83e098a461326ba5c835f7f605262c8917cb6a70eb3f63c4d236",
+    "emp_cutoff": 0.6286234576904173,
+    "emp_cutoff_source": "quantile 1-eta of five-fold cross-fitted raw training scores",
+    "eta_oof": 0.1934549398625601,
+    "model": "XGBoost",
+    "n_oof_predictions": 1076280
+  },
+  "timings": {
+    "refit_seconds": 23.816461086273193,
+    "search_seconds": 2602.469878911972,
+    "total_seconds": 2818.0495133399963
+  },
+  "written_utc": "2026-08-02T06:39:48Z"
+}

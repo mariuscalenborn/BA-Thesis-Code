@@ -1,0 +1,28 @@
+{
+  "best_index": 15,
+  "best_params": {
+    "clf__estimator__interactions": 20,
+    "clf__estimator__learning_rate": 0.005,
+    "clf__estimator__max_bins": 256,
+    "clf__estimator__max_leaves": 5,
+    "clf__estimator__min_samples_leaf": 2
+  },
+  "code_fingerprint": "be162763427db5e2ddb2a31b883e452fa044d10eaa90b1f3789de573001a16b9",
+  "mean_validation_auc": 0.7335149289546733,
+  "model": "EBM",
+  "n_folds": 1,
+  "search": {
+    "class": "RandomizedSearchCV",
+    "n_candidates": 20,
+    "search_seed": 4203
+  },
+  "std_validation_auc": 0.0,
+  "tie_break": {
+    "n_candidates": 20,
+    "n_tied_on_mean": 1,
+    "resolved_by": "mean",
+    "rule": "max mean roc_auc -> min std -> simpler configuration -> serialised order",
+    "tie_epsilon": 1e-06
+  },
+  "validation_design": "temporal, issue_year == 2015"
+}

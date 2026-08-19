@@ -1,0 +1,13 @@
+{
+  "ci_level": 0.95,
+  "cross_model_jaccard_top10": 0.5317460317460317,
+  "cross_model_jaccard_top10_ci_high": 0.5317460317460317,
+  "cross_model_jaccard_top10_ci_low": 0.486111111111111,
+  "cross_model_kendall_w_top20": 0.6741600790513834,
+  "cross_model_kendall_w_top20_ci_high": 0.684662178853755,
+  "cross_model_kendall_w_top20_ci_low": 0.6597084980237155,
+  "n_bootstrap": 1000,
+  "n_cases": 2000,
+  "scope_note": "Paired resampling of the explained applicants with all fitted models held fixed. Retraining variability is not covered.",
+  "uncertainty_scope": "case_selection_only"
+}

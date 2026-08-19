@@ -1,0 +1,25 @@
+{
+  "best_index": 4,
+  "best_params": {
+    "clf__lr__C": 10.0
+  },
+  "code_fingerprint": "e6d9da67c49c83e098a461326ba5c835f7f605262c8917cb6a70eb3f63c4d236",
+  "mean_validation_auc": 0.7084002517070827,
+  "model": "LR",
+  "n_folds": 5,
+  "search": {
+    "class": "GridSearchCV",
+    "n_candidates": 6,
+    "search_seed": null
+  },
+  "search_seconds": 458.8647758960724,
+  "std_validation_auc": 0.0010058331148260445,
+  "tie_break": {
+    "n_candidates": 6,
+    "n_tied_on_mean": 3,
+    "n_tied_on_std": 2,
+    "resolved_by": "complexity",
+    "rule": "max mean roc_auc -> min std -> simpler configuration -> serialised order",
+    "tie_epsilon": 1e-06
+  }
+}

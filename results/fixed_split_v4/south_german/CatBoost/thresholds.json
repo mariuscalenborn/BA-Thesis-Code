@@ -1,0 +1,10 @@
+{
+  "base_rate_source": "training partition default rate",
+  "base_rate_threshold": 0.3,
+  "code_fingerprint": "e6d9da67c49c83e098a461326ba5c835f7f605262c8917cb6a70eb3f63c4d236",
+  "emp_cutoff": 0.6761433742801127,
+  "emp_cutoff_source": "quantile 1-eta of five-fold cross-fitted raw training scores",
+  "eta_oof": 0.15279684788649234,
+  "model": "CatBoost",
+  "n_oof_predictions": 800
+}

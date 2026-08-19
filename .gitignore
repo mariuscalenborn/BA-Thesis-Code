@@ -1,0 +1,52 @@
+# --- Python ---
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.ipynb_checkpoints/
+.pytest_cache/
+
+# --- Data ---
+# Raw archives (~6.5 GB) and the semi-raw exports are not versioned. See the
+# "Data" section of README.md for the sources; notebooks 01-04 rebuild the
+# exports deterministically from the raw files.
+data/**
+!data/**/
+!data/**/.gitkeep
+# The two UCI-derived exports are small and freely licensed, so they ship with
+# the repository; the two Kaggle-derived ones must be rebuilt by notebooks 03-04.
+!data/processed/v4/south_german_credit.csv
+!data/processed/v4/taiwan_credit.csv
+
+# --- Results ---
+# The lightweight artefacts of the v4 chain are versioned so that every reported
+# number can be checked without re-running the pipeline. Fitted pipelines and the
+# per-row score arrays are not: they are large and runner 05 regenerates them.
+results/**
+!results/**/
+!results/**/*.csv
+!results/**/*.json
+!results/**/*.jsonl
+!results/**/*.png
+!results/**/*.pdf
+!results/**/split_indices.npz
+*.joblib
+*.pkl
+results/**/scores.npz
+results/**/oof_train_scores.npz
+
+# Smoke runs are throwaway; they must not dirty the tree the chain checks.
+results/smoke_v4/
+
+# --- Logs ---
+logs/
+*.log
+
+# --- OS / editor / secrets ---
+.DS_Store
+.vscode/
+*.swp
+.env
+kaggle.json

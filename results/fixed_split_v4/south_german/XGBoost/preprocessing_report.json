@@ -1,0 +1,84 @@
+{
+  "category_schema": {
+    "housing": [
+      "A151",
+      "A152",
+      "A153",
+      "Unknown"
+    ],
+    "other_debtors": [
+      "A101",
+      "A102",
+      "A103",
+      "Unknown"
+    ],
+    "other_installment": [
+      "A141",
+      "A142",
+      "A143",
+      "Unknown"
+    ],
+    "personal_status_sex": [
+      "A91",
+      "A92",
+      "A93",
+      "A94",
+      "Unknown"
+    ],
+    "purpose": [
+      "A40",
+      "A41",
+      "A410",
+      "A42",
+      "A43",
+      "A44",
+      "A45",
+      "A46",
+      "A48",
+      "A49",
+      "Unknown"
+    ]
+  },
+  "imputation_median": {
+    "age": 33.0,
+    "checking_account": 1.0,
+    "credit_amount": 2335.0,
+    "credit_history": 2.0,
+    "duration_months": 18.0,
+    "employment_since": 2.0,
+    "existing_credits": 1.0,
+    "foreign_worker": 1.0,
+    "installment_rate": 3.0,
+    "job": 2.0,
+    "maintenance_people": 1.0,
+    "property": 2.0,
+    "residence_since": 3.0,
+    "savings_account": 0.0,
+    "telephone": 0.0
+  },
+  "imputation_most_frequent": {},
+  "missingness_filter": {
+    "columns_dropped": [],
+    "n_columns_in": 20,
+    "n_columns_kept": 20,
+    "threshold": 0.4
+  },
+  "n_encoded_features": 43,
+  "unseen_categories": [
+    {
+      "by_feature": {},
+      "n_rows": 800,
+      "n_rows_with_unseen_level": 0,
+      "partition": "train",
+      "share_rows_with_unseen_level": 0.0
+    },
+    {
+      "by_feature": {},
+      "n_rows": 200,
+      "n_rows_with_unseen_level": 0,
+      "partition": "test",
+      "share_rows_with_unseen_level": 0.0
+    }
+  ],
+  "winsorization": {}
+}

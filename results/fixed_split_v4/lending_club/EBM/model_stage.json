@@ -1,0 +1,48 @@
+{
+  "code_fingerprint": "e6d9da67c49c83e098a461326ba5c835f7f605262c8917cb6a70eb3f63c4d236",
+  "model": "EBM",
+  "selection": {
+    "best_index": 13,
+    "best_params": {
+      "clf__estimator__interactions": 20,
+      "clf__estimator__learning_rate": 0.05,
+      "clf__estimator__max_bins": 512,
+      "clf__estimator__max_leaves": 2,
+      "clf__estimator__min_samples_leaf": 2
+    },
+    "code_fingerprint": "e6d9da67c49c83e098a461326ba5c835f7f605262c8917cb6a70eb3f63c4d236",
+    "mean_validation_auc": 0.7206520494129098,
+    "model": "EBM",
+    "n_folds": 5,
+    "search": {
+      "class": "RandomizedSearchCV",
+      "n_candidates": 20,
+      "search_seed": 4203
+    },
+    "search_seconds": 89692.1091401577,
+    "std_validation_auc": 0.0007845587844767913,
+    "tie_break": {
+      "n_candidates": 20,
+      "n_tied_on_mean": 1,
+      "resolved_by": "mean",
+      "rule": "max mean roc_auc -> min std -> simpler configuration -> serialised order",
+      "tie_epsilon": 1e-06
+    }
+  },
+  "thresholds": {
+    "base_rate_source": "training partition default rate",
+    "base_rate_threshold": 0.1996497194038726,
+    "code_fingerprint": "e6d9da67c49c83e098a461326ba5c835f7f605262c8917cb6a70eb3f63c4d236",
+    "emp_cutoff": 0.6346130614968187,
+    "emp_cutoff_source": "quantile 1-eta of five-fold cross-fitted raw training scores",
+    "eta_oof": 0.19491285028894068,
+    "model": "EBM",
+    "n_oof_predictions": 1076280
+  },
+  "timings": {
+    "refit_seconds": 927.7503006458282,
+    "search_seconds": 89692.1091401577,
+    "total_seconds": 96511.16675496101
+  },
+  "written_utc": "2026-08-02T05:52:50Z"
+}

@@ -1,0 +1,65 @@
+{
+  "category_schema": {
+    "EDUCATION": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "Unknown"
+    ],
+    "MARRIAGE": [
+      "1",
+      "2",
+      "3",
+      "Unknown"
+    ]
+  },
+  "imputation_median": {
+    "AGE": 34.0,
+    "BILL_AMT1": 22196.0,
+    "BILL_AMT2": 20990.0,
+    "BILL_AMT3": 20040.5,
+    "BILL_AMT4": 19036.0,
+    "BILL_AMT5": 18034.5,
+    "BILL_AMT6": 17071.0,
+    "LIMIT_BAL": 140000.0,
+    "PAY_0": 0.0,
+    "PAY_2": 0.0,
+    "PAY_3": 0.0,
+    "PAY_4": 0.0,
+    "PAY_5": 0.0,
+    "PAY_6": 0.0,
+    "PAY_AMT1": 2100.0,
+    "PAY_AMT2": 2007.0,
+    "PAY_AMT3": 1800.0,
+    "PAY_AMT4": 1500.0,
+    "PAY_AMT5": 1500.0,
+    "PAY_AMT6": 1500.0,
+    "SEX": 0.0
+  },
+  "imputation_most_frequent": {},
+  "missingness_filter": {
+    "columns_dropped": [],
+    "n_columns_in": 23,
+    "n_columns_kept": 23,
+    "threshold": 0.4
+  },
+  "n_encoded_features": 30,
+  "unseen_categories": [
+    {
+      "by_feature": {},
+      "n_rows": 24000,
+      "n_rows_with_unseen_level": 0,
+      "partition": "train",
+      "share_rows_with_unseen_level": 0.0
+    },
+    {
+      "by_feature": {},
+      "n_rows": 6000,
+      "n_rows_with_unseen_level": 0,
+      "partition": "test",
+      "share_rows_with_unseen_level": 0.0
+    }
+  ],
+  "winsorization": {}
+}

@@ -1,0 +1,10 @@
+{
+  "base_rate_source": "training partition default rate",
+  "base_rate_threshold": 0.22120833333333334,
+  "code_fingerprint": "e6d9da67c49c83e098a461326ba5c835f7f605262c8917cb6a70eb3f63c4d236",
+  "emp_cutoff": 0.7608511949107201,
+  "emp_cutoff_source": "quantile 1-eta of five-fold cross-fitted raw training scores",
+  "eta_oof": 0.0758270789807832,
+  "model": "LR",
+  "n_oof_predictions": 24000
+}

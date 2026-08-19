@@ -1,0 +1,38 @@
+{
+  "dataset": "taiwan",
+  "emp_implementation_version": "verbraken2014-hull-v4.1",
+  "loss_given_default_mixture": {
+    "density": 0.35,
+    "distribution": "Beta mixture per Verbraken et al. (2014)",
+    "p0": 0.55,
+    "p1": 0.1
+  },
+  "note": "The observed test default rate may be reported descriptively but must not replace prior_default_train inside the EMP calculation.",
+  "prior_default_train": 0.22120833333333334,
+  "prior_non_default_train": 0.7787916666666667,
+  "prior_source": "training partition, frozen before test access",
+  "roi": 0.2644,
+  "roi_provenance": "Verbraken et al. (2014) baseline",
+  "thresholds": {
+    "CatBoost": {
+      "base_rate_threshold": 0.22120833333333334,
+      "emp_cutoff": 0.844142858948865,
+      "eta_oof": 0.08724344026392084
+    },
+    "EBM": {
+      "base_rate_threshold": 0.22120833333333334,
+      "emp_cutoff": 0.8411707269441197,
+      "eta_oof": 0.09306194477838252
+    },
+    "LR": {
+      "base_rate_threshold": 0.22120833333333334,
+      "emp_cutoff": 0.7608511949107201,
+      "eta_oof": 0.0758270789807832
+    },
+    "XGBoost": {
+      "base_rate_threshold": 0.22120833333333334,
+      "emp_cutoff": 0.8234289426710536,
+      "eta_oof": 0.09004535441426276
+    }
+  }
+}

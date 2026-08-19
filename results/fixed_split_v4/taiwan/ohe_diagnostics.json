@@ -1,0 +1,122 @@
+{
+  "CatBoost": [
+    {
+      "by_feature": {},
+      "n_rows": 24000,
+      "n_rows_with_unseen_level": 0,
+      "partition": "train",
+      "share_rows_with_unseen_level": 0.0
+    },
+    {
+      "by_feature": {},
+      "n_rows": 6000,
+      "n_rows_with_unseen_level": 0,
+      "partition": "test",
+      "share_rows_with_unseen_level": 0.0
+    },
+    {
+      "by_feature": {},
+      "n_rows": 24000,
+      "n_rows_with_unseen_level": 0,
+      "partition": "explanation_background_train",
+      "share_rows_with_unseen_level": 0.0
+    },
+    {
+      "by_feature": {},
+      "n_rows": 2000,
+      "n_rows_with_unseen_level": 0,
+      "partition": "explanation_cases_test",
+      "share_rows_with_unseen_level": 0.0
+    }
+  ],
+  "EBM": [
+    {
+      "by_feature": {},
+      "n_rows": 24000,
+      "n_rows_with_unseen_level": 0,
+      "partition": "train",
+      "share_rows_with_unseen_level": 0.0
+    },
+    {
+      "by_feature": {},
+      "n_rows": 6000,
+      "n_rows_with_unseen_level": 0,
+      "partition": "test",
+      "share_rows_with_unseen_level": 0.0
+    },
+    {
+      "by_feature": {},
+      "n_rows": 24000,
+      "n_rows_with_unseen_level": 0,
+      "partition": "explanation_background_train",
+      "share_rows_with_unseen_level": 0.0
+    },
+    {
+      "by_feature": {},
+      "n_rows": 2000,
+      "n_rows_with_unseen_level": 0,
+      "partition": "explanation_cases_test",
+      "share_rows_with_unseen_level": 0.0
+    }
+  ],
+  "LR": [
+    {
+      "by_feature": {},
+      "n_rows": 24000,
+      "n_rows_with_unseen_level": 0,
+      "partition": "train",
+      "share_rows_with_unseen_level": 0.0
+    },
+    {
+      "by_feature": {},
+      "n_rows": 6000,
+      "n_rows_with_unseen_level": 0,
+      "partition": "test",
+      "share_rows_with_unseen_level": 0.0
+    },
+    {
+      "by_feature": {},
+      "n_rows": 24000,
+      "n_rows_with_unseen_level": 0,
+      "partition": "explanation_background_train",
+      "share_rows_with_unseen_level": 0.0
+    },
+    {
+      "by_feature": {},
+      "n_rows": 2000,
+      "n_rows_with_unseen_level": 0,
+      "partition": "explanation_cases_test",
+      "share_rows_with_unseen_level": 0.0
+    }
+  ],
+  "XGBoost": [
+    {
+      "by_feature": {},
+      "n_rows": 24000,
+      "n_rows_with_unseen_level": 0,
+      "partition": "train",
+      "share_rows_with_unseen_level": 0.0
+    },
+    {
+      "by_feature": {},
+      "n_rows": 6000,
+      "n_rows_with_unseen_level": 0,
+      "partition": "test",
+      "share_rows_with_unseen_level": 0.0
+    },
+    {
+      "by_feature": {},
+      "n_rows": 24000,
+      "n_rows_with_unseen_level": 0,
+      "partition": "explanation_background_train",
+      "share_rows_with_unseen_level": 0.0
+    },
+    {
+      "by_feature": {},
+      "n_rows": 2000,
+      "n_rows_with_unseen_level": 0,
+      "partition": "explanation_cases_test",
+      "share_rows_with_unseen_level": 0.0
+    }
+  ]
+}

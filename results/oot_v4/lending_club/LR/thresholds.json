@@ -1,0 +1,8 @@
+{
+  "base_rate_threshold": 0.184252231413757,
+  "code_fingerprint": "be162763427db5e2ddb2a31b883e452fa044d10eaa90b1f3789de573001a16b9",
+  "emp_cutoff": 0.642146897507453,
+  "emp_cutoff_source": "quantile 1-eta of five-fold cross-fitted raw scores inside the training window (issue_year <= 2015)",
+  "eta_oof": 0.17647319802554956,
+  "model": "LR"
+}

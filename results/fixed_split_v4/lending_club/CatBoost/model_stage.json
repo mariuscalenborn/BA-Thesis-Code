@@ -1,0 +1,61 @@
+{
+  "code_fingerprint": "e6d9da67c49c83e098a461326ba5c835f7f605262c8917cb6a70eb3f63c4d236",
+  "model": "CatBoost",
+  "selection": {
+    "best_index": 18,
+    "best_params": {
+      "clf__estimator__depth": 6,
+      "clf__estimator__iterations": 1530,
+      "clf__estimator__l2_leaf_reg": 5,
+      "clf__estimator__learning_rate": 0.1
+    },
+    "code_fingerprint": "e6d9da67c49c83e098a461326ba5c835f7f605262c8917cb6a70eb3f63c4d236",
+    "early_stopping": {
+      "patience": 50,
+      "per_fold_best_iteration": [
+        1441,
+        1608,
+        1529,
+        1543,
+        1020
+      ],
+      "refit_rounds": 1530,
+      "round_cap": 2000,
+      "rule": "median best iteration over the folds + 1"
+    },
+    "mean_validation_auc": 0.7285020095853787,
+    "model": "CatBoost",
+    "n_folds": 5,
+    "search": {
+      "class": "ESRandomizedSearch",
+      "n_candidates": 20,
+      "search_seed": 4203
+    },
+    "search_seconds": 2106.342405796051,
+    "std_validation_auc": 0.00031651040077140515,
+    "tie_break": {
+      "n_candidates": 20,
+      "n_tied_on_mean": 2,
+      "n_tied_on_std": 1,
+      "resolved_by": "std",
+      "rule": "max mean roc_auc -> min std -> simpler configuration -> serialised order",
+      "tie_epsilon": 1e-06
+    }
+  },
+  "thresholds": {
+    "base_rate_source": "training partition default rate",
+    "base_rate_threshold": 0.1996497194038726,
+    "code_fingerprint": "e6d9da67c49c83e098a461326ba5c835f7f605262c8917cb6a70eb3f63c4d236",
+    "emp_cutoff": 0.6321567827510773,
+    "emp_cutoff_source": "quantile 1-eta of five-fold cross-fitted raw training scores",
+    "eta_oof": 0.19254987748364139,
+    "model": "CatBoost",
+    "n_oof_predictions": 1076280
+  },
+  "timings": {
+    "refit_seconds": 18.78573226928711,
+    "search_seconds": 2106.342405796051,
+    "total_seconds": 2275.9001569747925
+  },
+  "written_utc": "2026-08-02T07:17:44Z"
+}

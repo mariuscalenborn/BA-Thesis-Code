@@ -1,0 +1,24 @@
+# Conda-Env für die Sodalab-Maschine (kein Admin nötig — User-Env via Miniconda).
+# Erstellen:  conda env create -f environment.yml   &&   conda activate credit-xai
+# Kernel:     python -m ipykernel install --user --name credit-xai
+name: credit-xai
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11            # Validierte Basis fuer sklearn/interpret/SHAP
+  - pip
+  - scikit-learn>=1.6      # estimator= API in CalibratedClassifierCV
+  - pandas
+  - numpy
+  - scipy
+  - matplotlib
+  - jupyter
+  - nbconvert
+  - ipykernel
+  - pytest                 # Leakage-, Split- und Reproduzierbarkeitstests (tests/)
+  - joblib                 # Persistenz der finalen und kalibrierten Pipelines
+  - xgboost>=2.0           # GPU via device='cuda'
+  - catboost=1.2.10        # GPU via task_type='GPU'
+  - shap
+  - pip:
+      - interpret>=0.6     # EBM (ExplainableBoostingClassifier)
