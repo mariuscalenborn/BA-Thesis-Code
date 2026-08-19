@@ -1,7 +1,7 @@
 # Credit Scoring — Performance–Explainability Trade-off (Thesis Code)
 
 Code repository for the bachelor thesis *Evaluating the Performance–Explainability
-Trade-off in Credit Scoring Under Regulatory Constraints. It contains the
+Trade-off in Credit Scoring Under Regulatory Constraints*. It contains the
 complete pipeline that produces every reported figure, together with the lightweight
 result artefacts the thesis reports. The methodology specification lives in
 [`docs/protocol.md`](docs/protocol.md) and is kept in sync with the code.
@@ -131,7 +131,7 @@ FORCE=1           # ignore existing checkpoints
 ```
 
 Individual runners accept environment overrides (`DATASETS`, `N_MAX`, `LC_N`, `*_ITER`,
-`EXPLAIN_CASES`, `N_BOOTSTRAP`, `OUTBASE`, `OUTDIR`) 
+`EXPLAIN_CASES`, `N_BOOTSTRAP`, `OUTBASE`, `OUTDIR`).
 
 ### 4. Re-running over the shipped results
 
@@ -211,6 +211,15 @@ Reproducibility comparisons distinguish deterministic artefacts (splits, sampled
 candidates, selected hyperparameters, fitted preprocessing parameters, predictions,
 thresholds, metrics, explanation rankings) from volatile execution metadata
 (timestamps, durations, log ordering, temporary paths), which is excluded.
+
+That determinism holds **within a fixed environment and device**. The reported run
+used Python 3.11 on GPU (`USE_GPU=1`); every `run_manifest.json` records the exact
+interpreter and package versions. Re-running under a different Python, a different
+XGBoost or CatBoost release, or on CPU reproduces the split, the fold assignments and
+the selected configurations exactly, and logistic regression bit-identically, but the
+boosted ensembles and the EBM can land on slightly different test metrics — their
+fits depend on library version and device. Use `environment.yml` for an exact
+comparison.
 
 EMP is stored internally as a decimal fraction of principal. In reported results, EMP
 levels are displayed as percentages of principal and absolute EMP differences as
