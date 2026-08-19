@@ -1,8 +1,7 @@
 # Credit Scoring — Performance–Explainability Trade-off (Thesis Code)
 
 Code repository for the bachelor thesis *Evaluating the Performance–Explainability
-Trade-off in Credit Scoring Under Regulatory Constraints: Evidence from Interpretable
-and Black-Box Models* (Marius Calenborn, Universität Paderborn). It contains the
+Trade-off in Credit Scoring Under Regulatory Constraints. It contains the
 complete pipeline that produces every reported figure, together with the lightweight
 result artefacts the thesis reports. The methodology specification lives in
 [`docs/protocol.md`](docs/protocol.md) and is kept in sync with the code.
@@ -66,7 +65,7 @@ data/processed/v4/lending_club_full.csv       rebuild with notebook 04
 The two UCI-derived exports are small and freely licensed, so they are included
 here: the test suite and the smoke run below work straight after cloning, with no
 download and no Kaggle account. The two Kaggle-derived exports are not
-redistributed; notebooks 03 and 04 rebuild them from the raw files.
+redistributed, notebooks 03 and 04 rebuild them from the raw files.
 
 ## Setup
 
@@ -132,7 +131,7 @@ FORCE=1           # ignore existing checkpoints
 ```
 
 Individual runners accept environment overrides (`DATASETS`, `N_MAX`, `LC_N`, `*_ITER`,
-`EXPLAIN_CASES`, `N_BOOTSTRAP`, `OUTBASE`, `OUTDIR`) — see the module docstrings.
+`EXPLAIN_CASES`, `N_BOOTSTRAP`, `OUTBASE`, `OUTDIR`) 
 
 ### 4. Figures
 
