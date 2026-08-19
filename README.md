@@ -33,40 +33,117 @@ refit, isotonic calibration, frozen thresholds, and exactly one test evaluation.
 
 ## Data
 
-Raw data is **not** part of this repository (~6.5 GB, and the two Kaggle sets require
-accepting their terms). Download the four sources and place them exactly as follows:
+Only the two UCI-derived semi-raw exports ship with this repository. The raw archives
+do not: they total roughly 6.5 GB, and the two Kaggle sources require accepting their
+terms. Each dataset below names its landing page, a direct link where one exists, the
+file to keep, and the exact path it belongs at. Every command runs from the
+repository root and leaves you there.
 
-| Dataset | Source | File → target path |
-|---|---|---|
-| German Credit (Statlog) | UCI ML Repository, *Statlog (German Credit Data)* (Hofmann 1994) | `german.data` → `data/raw/south_german/german.data` |
-| Taiwan Credit Card Default | UCI ML Repository, *Default of Credit Card Clients* (Yeh & Lien 2009) | `default of credit card clients.xls` → `data/raw/taiwan/default of credit card clients.xls` |
-| Home Credit Default Risk | Kaggle competition *home-credit-default-risk* | `application_train.csv` → `data/raw/home_credit/application_train.csv` |
-| Lending Club | Kaggle dataset `wordsforthewise/lending-club` | `accepted_2007_to_2018Q4.csv` → `data/raw/lending_club/archive/` (notebook 04 accepts the unpacked Kaggle layout, the bare CSV, or a `.csv.gz`) |
+### 1. German Credit (Statlog) — Hofmann (1994)
 
-Use the **original** Statlog file `german.data` (Hofmann 1994), not Grömping's
-corrected South German Credit variant. Only `application_train.csv` is needed from the
-Home Credit competition; the auxiliary tables are not used.
+- Landing page: <https://archive.ics.uci.edu/dataset/144/statlog+german+credit+data>
+- Direct: <https://archive.ics.uci.edu/static/public/144/statlog+german+credit+data.zip>
 
-Then run notebooks 01–04. They write semi-raw CSVs to `data/processed/v4/`:
-categorical columns stay raw, missing values survive, no column is dropped for
-missingness and nothing is clipped. Everything that depends on a sample statistic
-— missingness filter, one-hot schema, imputation, winsorization, scaling — is fitted
-at runtime inside the pipeline, per fit subset. The chain's preflight refuses to start
-on a missing, encoded or clipped export.
+```bash
+mkdir -p data/raw/south_german
+curl -L -o /tmp/statlog.zip https://archive.ics.uci.edu/static/public/144/statlog+german+credit+data.zip
+unzip -j /tmp/statlog.zip german.data -d data/raw/south_german
+rm /tmp/statlog.zip
+```
 
-Expected outputs of 01–04:
+Keep `german.data` → `data/raw/south_german/german.data` (78 KB).
+Take the **original** Statlog file, not Grömping's corrected South German Credit
+re-release — the two differ in several columns.
+
+### 2. Taiwan Credit Card Default — Yeh & Lien (2009)
+
+- Landing page: <https://archive.ics.uci.edu/dataset/350/default+of+credit+card+clients>
+- Direct: <https://archive.ics.uci.edu/static/public/350/default+of+credit+card+clients.zip>
+
+```bash
+mkdir -p data/raw/taiwan
+curl -L -o /tmp/taiwan.zip https://archive.ics.uci.edu/static/public/350/default+of+credit+card+clients.zip
+unzip -j /tmp/taiwan.zip -d data/raw/taiwan
+rm /tmp/taiwan.zip
+```
+
+Keep `default of credit card clients.xls` → `data/raw/taiwan/` (5.3 MB).
+
+### 3. Home Credit Default Risk — Kaggle competition
+
+- Landing page: <https://www.kaggle.com/c/home-credit-default-risk/data>
+- Requires a Kaggle account and accepting the competition rules on that page first.
+
+```bash
+pip install kaggle          # already in requirements.txt
+kaggle competitions download -c home-credit-default-risk -f application_train.csv \
+  -p data/raw/home_credit
+unzip -o data/raw/home_credit/application_train.csv.zip -d data/raw/home_credit
+rm data/raw/home_credit/application_train.csv.zip
+```
+
+Keep `application_train.csv` → `data/raw/home_credit/` (158 MB). Only this table is
+used; `bureau`, `previous_application` and the other auxiliary files are not — they
+carry post-approval information about other loans.
+
+### 4. Lending Club — Kaggle dataset
+
+- Landing page: <https://www.kaggle.com/datasets/wordsforthewise/lending-club>
+
+```bash
+kaggle datasets download -d wordsforthewise/lending-club \
+  -f accepted_2007_to_2018Q4.csv -p data/raw/lending_club/archive
+```
+
+Keep the accepted-loans file → `data/raw/lending_club/archive/`. Notebook 04 resolves
+it in three shapes and reports which it used, so any of these works:
+
+```
+data/raw/lending_club/archive/accepted_2007_to_2018q4.csv/accepted_2007_to_2018Q4.csv
+data/raw/lending_club/archive/accepted_2007_to_2018Q4.csv
+data/raw/lending_club/archive/accepted_2007_to_2018Q4.csv.gz
+```
+
+pandas reads the gzipped form directly, so there is no need to decompress (374 MB
+instead of 1.6 GB). The `rejected_*` file of the same dataset is not used.
+
+### Verifying what you downloaded
+
+SHA-256 of the files this study ran on:
+
+| File | SHA-256 |
+|---|---|
+| `german.data` | `b21f3d81db8071257d5ff1deaeba1fd4303b62712e6fcc9715c7a86202cb5871` |
+| `default of credit card clients.xls` | `30c6be3abd8dcfd3e6096c828bad8c2f011238620f5369220bd60cfc82700933` |
+| `application_train.csv` | `52e96b895b1112e1c853f670e58372719c8441c5ed1c57ac2f7fad559d784f5f` |
+| `accepted_2007_to_2018Q4.csv.gz` | `55c16f75120f897683f02e7aabcf080d0e4a20c4832feb1d592cfa941bd62a2d` |
+
+```bash
+shasum -a 256 data/raw/south_german/german.data
+```
+
+A mismatch on the Lending Club line most likely means you kept the uncompressed CSV
+rather than the gzipped one, which is fine — the hash simply covers the gzipped form.
+
+### Building the semi-raw exports
+
+Run notebooks 01–04. They write to `data/processed/v4/` and apply only deterministic,
+row-wise operations: categorical columns stay raw, missing values survive, no column
+is dropped for missingness and nothing is clipped. Everything that depends on a sample
+statistic — missingness filter, one-hot schema, imputation, winsorization, scaling —
+is fitted at runtime inside the pipeline, per fit subset. The chain's preflight refuses
+to start on a missing, encoded or clipped export.
 
 ```
 data/processed/v4/south_german_credit.csv     ships with this repository
 data/processed/v4/taiwan_credit.csv           ships with this repository
-data/processed/v4/home_credit.csv             rebuild with notebook 03
-data/processed/v4/lending_club_full.csv       rebuild with notebook 04
+data/processed/v4/home_credit.csv             build with notebook 03
+data/processed/v4/lending_club_full.csv       build with notebook 04
 ```
 
-The two UCI-derived exports are small and freely licensed, so they are included
-here: the test suite and the smoke run below work straight after cloning, with no
-download and no Kaggle account. The two Kaggle-derived exports are not
-redistributed, notebooks 03 and 04 rebuild them from the raw files.
+The two UCI-derived exports are small and freely licensed, so they are included here:
+the test suite and the smoke run below work straight after cloning, with no download
+and no Kaggle account. The two Kaggle-derived exports are not redistributed.
 
 ## Setup
 
