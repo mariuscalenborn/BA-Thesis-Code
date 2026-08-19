@@ -1,0 +1,135 @@
+% HIER BITTE AUSFÜLLEN:
+
+\newcommand{\abschlussarbeit}{Bachelorarbeit} % Bachelorarbeit / Masterarbeit
+\newcommand{\zweitpruefer}{Prof. Dr. Guido Schryen} % Zweitprüfer
+
+\newcommand{\sprache}{english} % Deutsch: german / Englisch: english
+\newcommand{\druck}{oneside} %  / Simplex: oneside / Duplex: twoside
+
+\newcommand{\titel}{Evaluating the Performance--Explainability Trade-off in Credit Scoring Under Regulatory Constraints}
+
+\newcommand{\name}{Marius Calenborn}
+\newcommand{\matrikelnummer}{7313033}
+\newcommand{\adresse}{Ebbendorfer Straße 14, 49176 Hilter a.T.W.}
+\newcommand{\upbmail}{mariusc@mail.uni-paderborn.de}
+\newcommand{\abgabedatum}{19.08.2026}
+
+
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+
+
+\documentclass[fontsize=12pt,BCOR=15mm,DIV=15,a4paper,headsepline,headings=small,\druck,openany,appendixprefix]{scrbook}
+
+\usepackage[onehalfspacing]{setspace}
+\raggedbottom
+\usepackage{emptypage}
+\makeatother 
+\usepackage{parskip}
+
+\usepackage[utf8]{inputenc} % Zeichenkodierung
+\usepackage[T1]{fontenc} % Trennung von Wörtern mit Umlauten
+\usepackage{lmodern} % Latin Modern font benutzen (enhanced computer modern clone, serif)
+\usepackage[\sprache]{babel} % Dokument in deutsch inklusive Silbentrennung nach neuer deutscher Rechtschreibung
+
+\usepackage{amsmath} % verbesserte mathematische Umgebung
+\usepackage{amsfonts} % zusätzliche mathematische Zeichen
+\usepackage{amssymb} % zusätzliche mathematische Zeichen
+\usepackage{amsthm} % zusätzliche mathematische Zeichen
+\usepackage[hyphens]{url}
+\usepackage{exscale} % Anpassung mathematischer Symbole an die Schriftgröße
+\usepackage{amstext} % \text in mathematischer Umgebung
+\usepackage{array} % Tabellen
+\usepackage{rotating} % rotierte Tabellen und Bilder
+\usepackage[algoruled, algochapter]{algorithm2e} % Pseudocode
+\usepackage{verbatim} % Funktion zum Schreiben von unformatiertem Text
+\usepackage[section]{placeins} % Verhindert das Wandern von floats in eine andere section
+\usepackage{color} % Farbiger Text
+\usepackage{graphicx} % Funktionen zum Einfügen von Bildern
+\usepackage{subfigure} % Anzeigen von Bildern aus mehreren Einzelbildern
+\usepackage[ngerman,\sprache]{babel}
+\usepackage{setspace} % Einstellen des Zeilenabstandes
+\usepackage[urlcolor = black,plainpages=false,pdfpagelabels=true,colorlinks=true,linkcolor=black,citecolor=black,bookmarksopen=true]{hyperref} % Verweise werden im PDF zu Hyperlinks
+\usepackage[natbibapa]{apacite}
+\usepackage{scrlayer-scrpage} % Koma für Kopfzeilen-Formatierung
+\usepackage[nounderscore]{syntax}
+\usepackage{tabulary} % bessere Tabellen
+\usepackage{tabularx} % bessere Tabellen
+\usepackage{longtable} % für Tabellen über mehrere Seiten
+\usepackage{array}
+\usepackage{paralist} % für kleine Einzüge mit \setdefaultleftmargin{0.5em}{}{}{}{}{}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage[table,xcdraw]{xcolor}
+\usepackage[hang]{footmisc} %Große Zahlen in Fußnoten
+\makeatletter
+\def\@makefnmark{\hbox{\textsuperscript\@thefnmark}}
+% \ohead{\leftmark} %Only chapter in header (not section!)
+\makeatother
+\let\footnotesize\small
+
+%\bibliographystyle{apalike} % Literaturverzeichnis entsprechend DIN 1505 formatiert, allerdings ohne URL und ISBN
+\renewcommand{\topfraction}{0.85} % Anteil einer Seite, die von Floats belegt sein darf (default 0.7)
+\renewcommand{\textfraction}{0.1} % Anteil einer Seite, die mindestens Text sein muss (default 0.2)
+\renewcommand{\floatpagefraction}{0.75} % Anteil einer Seite, die ein Float einnehmen darf, ohne auf die nächste Seite gesetzt zu werden (default 0.5)
+
+
+
+\usepackage{lipsum}
+
+% Begin
+\begin{document}
+
+% Front Matter
+\pagestyle{empty}
+\pagenumbering{alph}
+
+\input{title} 
+\cleardoublepage
+
+\input{erklaerung}
+\cleardoublepage
+
+\input{text/abstract}
+\cleardoublepage
+
+\pagestyle{scrheadings}
+\clearscrheadfoot
+\ohead{\headmark}
+\ofoot{\pagemark}
+
+\frontmatter
+
+\tableofcontents
+\cleardoublepage
+
+\listoffigures
+\cleardoublepage
+
+\listoftables
+\cleardoublepage
+
+% Thesis
+\mainmatter
+\input{text/ch_01}
+\input{text/ch_02}
+\input{text/ch_03}
+\input{text/ch_04}
+\input{text/ch_05}
+\input{text/ch_06}
+
+% Bibliography
+% Bibliography
+% Bibliography
+\cleardoublepage
+\addcontentsline{toc}{chapter}{Bibliography}
+
+\nocite{EUAIAct2024}
+
+\bibliographystyle{apacite}
+\bibliography{bibliography}
+
+% Appendix (if required...)
+\input{text/appendix}
+
+% End
+\end{document}

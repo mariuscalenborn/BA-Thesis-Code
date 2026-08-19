@@ -1,0 +1,75 @@
+\chapter{Introduction}
+
+\section{Motivation}
+
+Credit scoring is a consequential application of statistical and machine-learning
+models in the financial sector: scoring outcomes can influence access to loans and
+the conditions under which credit is offered, thus affecting an important dimension
+of economic participation
+\citep{bahloolPerformanceFairnessExplainability2026}. Model choice in this context
+involves a tension. Flexible boosted-tree ensembles can represent nonlinear
+relationships and interactions, but their fitted decision logic is not directly
+inspectable and is therefore commonly explained post hoc. Inherently interpretable
+models expose their decision structure more directly, but are often assumed to
+sacrifice predictive performance
+\citep{rudinStopExplainingBlack2019a, dessainCostExplainabilityAI2023}.
+
+A recent systematic literature review questions how firmly this presumed trade-off is
+established. It finds that predictive performance and explainability in AI-based credit
+scoring are frequently assessed separately and that the
+performance--explainability trade-off is more often assumed than directly quantified
+\citep{bahloolPerformanceFairnessExplainability2026}. Existing direct comparisons
+indicate that differences between interpretable and black-box models can be small and
+depend on the dataset, preprocessing and model specification. Greater complexity
+therefore does not necessarily produce a substantial predictive advantage
+\citep{dessainCostExplainabilityAI2023,
+amekoeExploringAccuracyInterpretability2024b}.
+
+This issue also has regulatory relevance in the European Union. Under
+Article~6(2) and Annex~III(5)(b) of Regulation~(EU)~2024/1689, creditworthiness
+assessment is listed among the high-risk use cases for systems that fall within the
+Act's definition of AI. The Act prescribes no model family but establishes requirements
+concerning risk management, documentation, transparency, accuracy and human oversight
+for covered high-risk systems. The GDPR applies independently where personal data are
+processed and provides additional safeguards concerning certain automated individual
+decisions \citep{mullerAIbasedCreditScoring2025, EUAIAct2024}.
+
+To examine whether boosted-tree ensembles provide a consistent predictive or
+profit-based advantage, this thesis compares two intrinsically interpretable models,
+logistic regression (LR) and the Explainable Boosting Machine (EBM), with the
+post-hoc-explained XGBoost and CatBoost ensembles. The EBM provides the central
+glass-box case because it retains an additive, directly inspectable structure while
+representing nonlinear effects and selected pairwise interactions
+\citep{louAccurateIntelligibleModels2013,
+noriInterpretMLUnifiedFramework2019}. Using two boosted-tree implementations also
+examines whether recorded patterns recur within that model family.
+
+Predictive performance and Expected Maximum Profit (EMP)
+\citep{verbrakenDevelopmentApplicationConsumer2014} form the primary empirical
+dimensions. Attribution-ranking stability and cross-model agreement provide supplementary
+evidence on the resulting global explanation outputs, covering the reproducibility
+and convergence of those outputs.
+
+\section{Research Question and Objectives}\label{sec:rq}
+
+The central research question is: \textit{Under the empirical conditions studied,
+how do intrinsically interpretable credit-scoring models, particularly the EBM,
+compare with post-hoc-explained boosted-tree ensembles in predictive and profit-based
+performance, and what do the observed differences imply for model choice in the EU
+regulatory context?}
+
+The question is addressed in three empirical steps. First, the four pipelines are
+compared across four public credit datasets in discrimination, classification performance and EMP. Second, the case-sampling stability
+and cross-model agreement of their global source-feature attribution rankings are
+examined. Third, training-size sensitivity is evaluated on Home Credit and Lending
+Club, supplemented by out-of-time validation concerning Lending Club. The regulatory component situates these outcomes within the requirements that apply
+to credit scoring under EU law, establishing what the empirical evidence can
+contribute to a system-level assessment that reaches beyond model architecture. 
+
+Chapter~\ref{ch:background} develops the conceptual, methodological and regulatory
+background and derives the research gap from prior work, and
+Chapter~\ref{ch:method} specifies the datasets, the four pipelines, the evaluation
+measures and the prespecified analysis plan. Chapter~\ref{ch:results} reports the
+performance, attribution and sensitivity results, Chapter~\ref{ch:discussion}
+interprets them and states the limitations of the design, and
+Chapter~\ref{ch:conclusion} answers the research question.

@@ -1,0 +1,481 @@
+\chapter{Methodology and Implementation}\label{ch:method}
+
+\section{Research Design}\label{sec:design}
+
+The study adopts a comparative empirical design in which four model pipelines are
+evaluated across four publicly available credit-risk datasets under a common protocol.
+Each dataset poses a binary default-classification task, which allows the models to be
+compared while the credit product, the exact outcome definition, sample size, class
+distribution, and temporal information vary.
+
+Predictive and profit-based performance constitute the primary evaluation dimensions.
+Attribution-ranking stability and cross-model agreement provide supplementary evidence
+about the resulting explanation outputs. Cross-dataset comparisons, learning curves and
+an out-of-time experiment examine how the observed findings vary across settings.
+
+\section{Datasets and Prediction Tasks}\label{sec:datasets}
+
+The four datasets differ substantially in sample size, class distribution and credit
+product (Table~\ref{tab:datasets}). The first three are cross-sectional benchmarks of
+increasing scale; Lending Club additionally enables an out-of-time evaluation.
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabular}{lrccl}
+\toprule
+\textbf{Dataset} & \textbf{Samples} & \textbf{Predictors}
+& \textbf{Default rate} & \textbf{Credit product} \\
+\midrule
+German Credit (Statlog) & 1{,}000       & 20 & 0.300 & Consumer instalment \\
+Taiwan Default          & 30{,}000      & 23 & 0.221 & Revolving credit card \\
+Home Credit             & 307{,}511     & 72 & 0.081 & General-purpose consumer \\
+Lending Club            & 1{,}345{,}350 & 62 & 0.200 & Peer-to-peer lending \\
+\bottomrule
+\end{tabular}
+\caption[The four credit datasets]{The four credit datasets, ordered by size.
+Predictors denote retained source predictors. Default rate is the share of the positive
+class.}
+\label{tab:datasets}
+\end{table}
+
+
+Each dataset supplies its own published label rather than a horizon constructed here:
+the good/bad credit classification of German Credit, delinquency in the following
+billing cycle for the revolving card accounts of Taiwan, the documented
+payment-difficulty target of Home Credit, and resolved loan status, fully paid against
+charged off or defaulted, for Lending Club. Labels, horizons and populations therefore
+differ, so the four are empirical contexts rather than interchangeable replications.
+
+This thesis uses the original Statlog file \emph{German Credit} with its original attribute coding \citep{hofmannStatlogGermanCredit1994}. \emph{Taiwan Default} \citep{i-chengyehDefaultCreditCard2009} provides a
+medium-sized benchmark for revolving credit card debt. It differs from the other datasets
+because it represents behavioural scoring of existing card accounts rather than
+application scoring: the predictors are six months of billing and repayment history, and
+the target is delinquency in the month that follows. It is retained as an additional
+credit context.
+\emph{Home Credit Default Risk}\footnote{Kaggle competition dataset
+\emph{Home Credit Default Risk} (2018),
+\url{https://www.kaggle.com/c/home-credit-default-risk}, accessed 2~June~2026.}
+represents general-purpose
+consumer lending and exhibits the strongest class imbalance among the four
+datasets.
+\emph{Lending Club}\footnote{Kaggle dataset
+\emph{All Lending Club Loan Data}, covering loans issued from 2007 to 2018,
+\url{https://www.kaggle.com/datasets/wordsforthewise/lending-club},
+accessed 2~June~2026.}
+is the largest dataset considered.
+Of approximately 2.26 million accepted loans, approximately 1.35 million loans
+with resolved outcomes are retained. Its origination timestamps additionally
+enable out-of-time evaluation.
+
+The four datasets were selected based on public availability, documented binary
+credit outcomes and variation in sample size and lending context. Public availability supports reproducible
+implementation of the evaluation protocol. The datasets span three orders of
+magnitude in sample size and cover different credit products, allowing the model
+pipelines to be compared across heterogeneous empirical settings. Home Credit and
+Lending Club additionally provide larger, industry-derived credit datasets.
+
+\section{Model Set}\label{sec:models}
+
+The comparison comprises logistic regression, the EBM, XGBoost and CatBoost. Logistic regression
+serves as the linear transparent baseline against which any gain from added flexibility
+is read. The EBM represents the non-linear intrinsically interpretable alternative,
+contributing additional capacity whose shape functions remain directly inspectable.
+XGBoost is the primary boosted-tree comparator, explained post hoc through TreeSHAP, and
+CatBoost provides a within-family check on whether the observed patterns recur across two
+boosted-tree implementations rather than defining an additional structural group. All
+four models receive the shared preprocessed inputs. CatBoost's native ordered
+target statistics are therefore not used. Comparisons concern the resulting
+model--pipeline configurations rather than model classes in isolation.
+
+
+\section{Data Preparation}\label{sec:prep}
+
+\paragraph{Feature definition and exclusions.}
+The outcome is coded so that the positive class denotes default. This operation
+concerns the target label only; no supervised encoding of predictors is performed.
+Identifiers, free-text fields and variables unavailable at the intended prediction
+point are excluded based on the accompanying dataset documentation. Documented
+sentinel and undefined values are converted to missing values according to
+prespecified dataset-specific rules. For Taiwan, the payment-history variables are
+retained because they describe repayment behaviour observed before the prediction
+period and therefore do not constitute target leakage.
+
+For Lending Club, platform-generated risk and pricing information, such as
+\emph{grade}, \emph{sub-grade} and \emph{interest rate}, as well as
+contract-derived fields such as \emph{instalment}, are excluded from the predictor
+set. This prevents the models from using outputs of the platform's existing
+assessment and pricing process and approximates a pre-pricing prediction point. Interest rate is stored separately only for the economic evaluation,
+while origination year is used only to construct the temporal split and neither enters
+the feature matrices used for model fitting or explanation.
+
+\paragraph{Missing values and outliers.}
+A prespecified missingness threshold excludes features with more than 40\%
+missing observations, since their observed values cover only a limited share of
+the applicant population and extensive imputation would make their representation
+depend strongly on the chosen imputation rule. The resulting numbers of retained
+source predictors are reported in Table~\ref{tab:datasets}. 
+
+
+Retained numerical features, including ordinally encoded features, are imputed
+with the median. Missing nominal values are assigned to a separate
+\emph{unknown} category included in the fitted encoding schema. For nominal
+variables, missingness therefore remains distinguishable from observed category
+levels, and this distinction is preserved in the resulting feature-level
+explanations.
+
+Selected heavy-tailed monetary and ratio variables are capped at their
+training-derived upper 99th percentiles, corresponding to upper-tail
+winsorization. The affected variables are prespecified based on their documented
+meaning and plausibility checks. Extreme values may represent recording
+conventions, errors or genuine tail observations; the procedure does not
+distinguish among these cases. The same rule is applied across all four model
+pipelines before model-specific transformations.
+
+\paragraph{Encoding and scaling.}
+Ordered categorical features are mapped to consecutive integer codes following
+their documented category order. For logistic regression, this representation
+treats adjacent levels as equally spaced and imposes a linear effect on the
+log-odds. The EBM and boosted-tree models can instead represent nonlinear changes
+across the coded levels.
+
+Nominal features are one-hot encoded without dropping a reference level. With
+unseen categories represented by an all-zero indicator vector, retaining all
+observed levels prevents them from being conflated with an omitted reference
+category. Although the complete indicator set introduces redundancy in the
+logistic-regression design matrix, estimation is stabilised by the $L_2$ penalty;
+the resulting coefficients are therefore not contrasts against an omitted
+baseline category.
+
+Standardisation is fitted only within the logistic-regression pipeline. It is not
+applied to the EBM or boosted-tree models, which do not require predictors to be
+placed on a common scale.
+
+\paragraph{Class imbalance.}
+The non-default-to-default ratio ranges from roughly $2{:}1$ in German Credit to about
+$11{:}1$ in Home Credit. Rather than resampling, imbalance is addressed by weighting the
+classes inversely to their frequencies, which avoids the information loss of
+under-sampling and the artefacts of synthetic over-sampling, whose effect on credit-risk
+models is inconsistent \citep{zhaoResamplingTechniquesStudy2024}.
+Logistic regression uses \texttt{balanced} class weights, XGBoost and CatBoost set
+\texttt{scale\_pos\_weight}, and the EBM, having no class-weight parameter, is trained
+with explicit balanced sample weights computed inside each fitting routine. The rule is fixed in
+advance rather than tuned, so that it applies the same weighting principle through
+estimator-specific interfaces.
+
+\paragraph{Pipeline integration.}
+Before pipeline fitting, preprocessing is limited to prespecified,
+sample-independent operations: target coding, removal of identifiers and variables
+unavailable at the prediction point, documented sentinel-value conversions, and
+documentation-based ordinal mappings. Missing values, nominal category labels and
+uncapped numerical values therefore remain in the stored modelling tables, which
+are treated as \emph{semi-raw}.
+
+All sample-dependent steps are
+implemented within the fitted pipeline. Their parameters are estimated only from
+the respective fitting sample and applied unchanged to the corresponding
+validation or test data. The complete pipeline is refitted within every
+cross-validation fold and once on the full training partition. Consequently, no
+validation or test observation contributes to an estimated preprocessing
+parameter, and the feature representation forms part of the evaluated
+preprocessing-and-model pipeline.
+
+
+
+\section{Training, Validation and Calibration}\label{sec:validation}
+
+\paragraph{Training and test partition.}
+Each dataset is partitioned once using a stratified random split, with 80\% of
+the observations assigned to training and 20\% to a held-out test partition.
+The same partition is used for all four model pipelines, and the observed class
+proportions are approximately preserved. All model-development decisions,
+including preprocessing, hyperparameter selection, probability calibration and
+threshold estimation, are confined to the training partition. The test partition
+is reserved for the prespecified final evaluation and explanation analyses and
+does not inform any fitted parameter or selection decision.
+
+\paragraph{Hyperparameter selection.}
+Hyperparameters are selected exclusively within each training partition using
+stratified five-fold cross-validation. Candidate configurations are ranked by
+their mean validation ROC-AUC across the five folds.
+
+Search spaces and budgets are prespecified separately for each model family
+rather than normalised to search-space size. The logistic-regression grid is
+evaluated exhaustively, whereas the EBM, XGBoost and CatBoost spaces receive
+different fractional coverage under randomised search
+(Table~\ref{tab:hp_all}). Exact ties in mean validation ROC-AUC are resolved in
+favour of the configuration with the lower standard deviation across validation
+folds.
+
+\paragraph{Early stopping.}
+For XGBoost and CatBoost, the number of boosting rounds is determined by early
+stopping rather than included in the hyperparameter search space. Within each
+cross-validation split, a candidate is fitted on four folds and monitored on the
+fifth; training stops after 50 consecutive rounds without an improvement in
+validation ROC-AUC, subject to a maximum of 2{,}000 rounds. The
+median stopping point across the five folds determines the fixed round count used
+for the final refit.
+
+\paragraph{Probability calibration.}
+Hyperparameter selection optimises ROC-AUC and therefore targets ranking rather
+than probability calibration \citep{bequeApproachesCreditScorecard2017}. Calibration is subsequently performed entirely
+within the training partition. Raw out-of-fold scores are generated through an
+internal stratified three-fold cross-validation and pooled to fit an isotonic
+calibrator. The selected pipeline is then refitted on the full training partition,
+and the calibrator maps its raw scores to calibrated probabilities \citep{bequeApproachesCreditScorecard2017}. No test
+observations are used in this procedure.
+
+The isotonic calibrator is unweighted so that it targets the observed class
+distribution. Class and sample weights are applied only to the underlying
+estimator fits and are not passed to the calibration stage; doing so would instead
+target a reweighted class distribution. Raw scores and calibrated probabilities
+are evaluated separately according to the metric definitions in
+Section~\ref{sec:eval}.
+
+\paragraph{Reproducibility controls.}
+Dataset partitions and cross-validation folds are generated from recorded seeds and
+reused across all four pipelines, so the paired comparisons rest on identical splits.
+A prespecified analysis plan fixes the permitted test-set analyses; test results are not
+used to revise preprocessing, hyperparameters, calibration, thresholds, metric
+definitions or model selection.
+
+\section{Predictive and Economic Evaluation}\label{sec:eval}
+
+The evaluation distinguishes ranking quality, probability accuracy,
+classification at a prespecified operating point, and economic performance.
+ROC-AUC and EMP serve as the primary predictive and economic measures,
+respectively; the remaining metrics provide complementary diagnostics.
+
+\paragraph{Discrimination.}
+ROC-AUC is the hyperparameter-selection objective and primary discrimination
+metric because it summarises how consistently the model ranks defaulters above
+non-defaulters across all possible score thresholds. Average precision (AP)
+complements it by summarising the precision--recall trade-off for the default
+class, which is particularly relevant when defaults are less frequent than
+non-defaults. Both metrics are computed from raw model scores because they
+evaluate ranking rather than probability calibration. The no-skill baseline of
+AP equals the default rate and therefore differs across datasets.
+
+\paragraph{Probabilistic performance.}
+Models with similar rankings can nevertheless produce substantially different
+default probabilities. The Brier score is therefore computed from calibrated
+probabilities to measure the mean squared error of the probability forecasts,
+penalising both over- and under-confident predictions. It is the only reported
+metric that directly evaluates the numerical probability estimates.
+
+\paragraph{Threshold-dependent performance.}
+Ranking metrics do not show how model scores translate into discrete
+classifications at a particular operating point. Balanced accuracy and $F_1$ are
+therefore reported from calibrated probabilities at a common prespecified rule.
+Balanced accuracy gives equal weight to default-class recall and
+non-default-class recall, preventing the majority class from dominating the
+summary. $F_1$, the harmonic mean of precision and recall for the default class,
+instead captures both how many defaulters are identified and how many applicants
+classified as high risk actually default. It complements balanced accuracy by
+focusing specifically on the positive-class decisions while ignoring true
+negatives.
+
+Applicants are classified as high risk when their predicted default probability
+exceeds the default rate of the training partition. This base-rate threshold
+provides a transparent, dataset-specific reference point for identifying risk
+above the observed population prevalence and is fixed without test outcomes. A
+threshold of $0.5$ is not used because, for calibrated probabilities, it
+corresponds to an equal-error-cost rule for which no application-specific
+justification is available. The base-rate threshold remains a descriptive
+operating point rather than an economically optimised lending threshold; neither
+balanced accuracy nor $F_1$ is interpreted as an economic decision criterion.
+
+\paragraph{Economic performance.}
+Expected Maximum Profit (Section~\ref{sec:emp}) complements the
+statistical metrics by translating score-based discrimination into a normalised
+economic performance measure under uncertainty about loss severity. It is used
+because realised, application-specific cost and loss information is unavailable
+for the public datasets. Its parameterisation is prespecified before test-set
+evaluation.
+
+The setup combines class priors estimated from the training partition with the
+loss-given-default distribution specified by
+\citet{verbrakenDevelopmentApplicationConsumer2014}. This distribution assigns
+point masses of $0.55$ to $\lambda=0$ and $0.10$ to $\lambda=1$, with the
+remaining probability mass of $0.35$ distributed uniformly over $(0,1)$. Because
+the four datasets do not provide a common and consistently defined basis for
+estimating product-specific loss distributions, the published specification is
+used as a transparent common reference scenario. Holding it fixed across model
+pipelines and datasets prevents the assumed loss distribution itself from varying
+across comparisons, but does not imply that it accurately represents every
+lending product. The assumed return is set to the Verbraken baseline of
+$\mathrm{ROI}=0.2644$, except for Lending Club, where the mean contractual
+interest rate in the training partition is used as a proxy for the return,
+yielding $\mathrm{ROI}\approx0.13$.
+
+
+EMP is computed directly from the raw model scores. Heterogeneous loan
+exposures are not modelled. Each observation is assigned unit exposure, and no
+observation-specific exposure weights are applied. EMP remains conditional on
+the assumed return, loss-given-default distribution and class prevalence
+\citep{xuProfitRiskdrivenCredit2024} and should not be interpreted as realised
+portfolio profit. Accordingly, absolute EMP levels are interpreted only within
+datasets, whereas cross-dataset comparisons concern relative model patterns. 
+
+
+\section{Attribution and Agreement Measures}\label{sec:explanations}
+
+\paragraph{Scope of the explanation analysis.}
+The supplementary explanation analysis examines global source-feature rankings
+produced by the four fitted model--explainer pipelines. It considers
+\emph{case-sampling stability}---whether a pipeline's ranking is reproducible
+when the explained cases are resampled---and \emph{cross-model agreement}---how
+similar the rankings are across pipelines. Models, explainer settings and
+reference data remain fixed, so the stability analysis captures sensitivity to
+the composition of the explained sample rather than retraining stability.
+Applicant-level explanation quality is not evaluated. The structural model
+grouping is determined by model construction and does not depend on either
+measure.
+
+
+\paragraph{Attribution methods and reference data.}
+Global rankings are constructed from additive feature contributions:
+LinearSHAP for logistic regression
+\citep{lundbergUnifiedApproachInterpreting2017}, the EBM's intrinsic term
+contributions
+\citep{louAccurateIntelligibleModels2013,
+noriInterpretMLUnifiedFramework2019}, and TreeSHAP for XGBoost and CatBoost
+\citep{lundbergLocalExplanationsGlobal2020}. All contributions are computed for
+the final uncalibrated base estimator fitted on the complete training partition.
+
+The procedures differ in their reference construction. LinearSHAP uses an
+interventional background of 500 training observations, sampled once and held
+fixed throughout the analysis. The EBM contributions follow the model's own
+additive decomposition. TreeSHAP is applied in
+\texttt{tree\_path\_dependent} mode and uses the path counts stored in the fitted
+trees instead of a separately supplied background sample. The resulting rankings are therefore interpreted as outputs of the
+complete model--explainer pipelines rather than as properties of the fitted
+models alone. Because the attribution procedures use different reference and decomposition rules, their absolute magnitudes are not compared across pipelines; the analysis compares only the resulting feature rankings and top-ten sets.
+
+\paragraph{Construction of the global rankings.}
+Attributions are computed for the same held-out observations across all four
+pipelines: the complete German Credit test partition and a fixed random sample
+of 2{,}000 test observations from each larger dataset. They are then mapped back
+from the encoded model inputs to their source features, defined as the original
+predictors before one-hot encoding.
+
+For logistic regression, XGBoost and CatBoost, the absolute contributions of all
+encoded inputs belonging to a source feature are summed. The EBM adds one prior
+step: each signed interaction contribution is divided equally between its two
+constituent features and combined with their signed main-effect contributions,
+and absolute values are taken only afterwards. Alternative allocations are possible and would alter the resulting source-feature ranking. Global importance is the mean of
+these aggregated contributions across the explained cases, following the
+mean-absolute attribution convention, and the features are ranked accordingly
+\citep{lundbergLocalExplanationsGlobal2020}. Taking absolute values before
+summing preserves contributions from category levels acting in opposing
+directions.
+
+\paragraph{Stability and agreement.}
+Case-sampling stability is evaluated by recomputing the global rankings across
+bootstrap samples of the explained cases, summarised by top-ten inclusion
+frequency and bootstrap rank-interval width.
+
+Cross-model agreement is evaluated within each dataset on the shared
+source-feature set. Jaccard overlap quantifies the similarity of two top-ten sets
+irrespective of their internal ordering; pairwise Spearman correlation
+complements it by comparing the ordering of the complete source-feature
+rankings \citep{nautaAnecdotalEvidenceQuantitative2023}. Both metrics are computed for
+each of the six possible model pairs. Averaging these pairwise Jaccard scores
+yields the mean Jaccard overlap, which serves as a single dataset-level summary
+of the overall feature consensus among all four pipelines.
+
+
+\section{Resampling, Stability and Uncertainty}\label{sec:comparison}
+
+Resampling serves two distinct purposes. For predictive performance, it estimates the
+sensitivity of the reported model differences to the composition of the held-out
+sample. For the explanation analysis, it defines the evaluated quantity: attribution
+stability measures how far a feature ranking fluctuates when the explained cases are
+resampled, so the procedure constitutes the metric rather than bounding the uncertainty
+around a point estimate.
+
+\paragraph{Performance uncertainty.}
+Test-set sampling uncertainty is estimated using a paired stratified bootstrap with
+1{,}000 replicates per dataset \citep{raschkaModelEvaluationModel2020}. Defaults and
+non-defaults are resampled separately to preserve the observed class counts. Each
+bootstrap sample is used for all four pipelines, so pairwise differences are evaluated
+on the same resampled applicants. All fitted components and prespecified classification
+thresholds remain fixed; no model is refitted. Each metric is recomputed in every
+replicate. Balanced accuracy and $F_1$ use the prespecified base-rate threshold, whereas
+EMP retains its internal maximisation over candidate cut-offs.
+
+All six metrics are reported as test-set point estimates with 95\% percentile
+bootstrap intervals. Pairwise model differences are computed within each replicate, and
+their intervals are obtained from the 2.5th and 97.5th percentiles of the corresponding
+paired difference distributions. $\Delta$ROC-AUC and its paired interval provide the
+primary summary of between-model performance differences.
+
+\paragraph{Attribution-ranking stability.}
+For each dataset, 1{,}000 paired case-bootstrap samples are drawn, with the same
+resampled applicants used for all four pipelines. The fitted models, explainers and
+reference data remain fixed while the global rankings are recomputed. For each of the
+ten features leading a pipeline's original global ranking, its bootstrap top-ten
+inclusion frequency and 95\% percentile rank interval are computed.
+The reported model-level summaries are the mean inclusion frequency and mean
+rank-interval width across these ten features. The two capture different things:
+inclusion frequency measures set membership and reaches one when all ten features
+remain in the top ten in every replicate, whereas rank-interval width, measured in
+rank positions, measures movement within the ranking. High membership is therefore
+compatible with substantial reordering among the ten.
+
+\paragraph{Agreement uncertainty.}
+Agreement is evaluated on the same case-bootstrap replicates. Within each, all six
+pairwise Jaccard overlaps are recomputed and their mean recorded, and the reported
+bounds are the corresponding percentiles of those 1{,}000 means. The resampling
+therefore concerns the composition of the explained cases. The pairwise values are
+never resampled among themselves. The Spearman correlations complement Jaccard and are
+reported as descriptive point estimates.
+
+
+\section{Sensitivity Analyses and External Validity}\label{sec:robustness}
+
+\paragraph{Cross-dataset comparison.}
+All four datasets enter the primary comparison to examine whether relative model
+patterns recur across credit-scoring settings, whereas the learning-curve and
+out-of-time analyses are restricted to certain datasets. Because dataset size, class
+imbalance, feature representation, product context and scoring type vary jointly, cross-dataset differences are interpreted descriptively
+and are not attributed to any single factor.
+
+
+\paragraph{Learning curves.}
+Learning curves are restricted to Home Credit and Lending Club, whose training
+partitions support a broad range of sample sizes. A common size grid capped at
+$250{,}000$ observations is used; grid points exceeding the available training pool
+are omitted. The largest evaluated samples therefore contain $100{,}000$ observations
+for Home Credit and $250{,}000$ for Lending Club. At each size, three stratified
+subsamples are drawn from the fixed training partition. All four pipelines are refitted
+on each subsample and evaluated on the same held-out test partition. Predictive
+performance is averaged across the three refits, whereas attribution-ranking agreement
+across refits is calculated as the mean pairwise top-ten Jaccard overlap over the three
+refit pairs.
+
+To make sample size the only factor that varies, model specifications are held constant
+across the entire grid. One manually specified configuration per model is used: logistic
+regression with $C=1$; the EBM with eight outer bags and otherwise default settings;
+XGBoost with 300 boosting rounds at depth 6 and a learning rate of $0.1$; and CatBoost
+with 400 iterations at the same depth and learning rate.
+
+\paragraph{Out-of-time evaluation.}
+The primary evaluation randomly partitions each pooled dataset, so its training and test
+observations are drawn from the same overall sample. To examine whether the model
+ordering also recurs when evaluation follows training chronologically, Lending Club, the
+only dataset with a usable origination timestamp, is additionally evaluated out of time.
+Candidate configurations are fitted on loans issued through 2014 and selected on the
+2015 cohort. The selected pipelines are then refitted on all retained loans issued
+through 2015 and evaluated on the 2016--2018 cohorts.
+
+
+Origination year is used only to define the temporal partitions and is excluded from the
+predictor set. The same model-specific search spaces and budgets as in the primary
+comparison are retained. Throughout the Lending Club analysis, only loans with outcomes
+resolved by the observation cut-off are included. Because more recent loans had less
+time to reach a resolved outcome, this restriction excludes a larger share of the later
+evaluation cohorts and makes the temporal estimates conditional on the subset of
+matured loans. The design provides a single temporal evaluation and complements rather than replaces the random-split
+benchmark used across all four datasets.
+

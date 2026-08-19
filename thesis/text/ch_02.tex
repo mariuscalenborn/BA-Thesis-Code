@@ -1,0 +1,298 @@
+\chapter{Theoretical Background and Related Work}\label{ch:background}
+
+\section{Conceptual and Regulatory Background}
+
+\subsection{Credit Scoring Models and Interpretability}
+
+Credit scoring is the task of estimating the probability that a borrower will
+default, framed here as a binary classification problem \citep{lessmannBenchmarkingStateoftheartClassification2015}. Models
+are grouped in this thesis by a structural criterion: whether the fitted object can
+be read directly, or whether a second computation is needed to say what it does. The
+criterion concerns the availability of an explanation, not its quality. An
+intrinsically interpretable model with hundreds of correlated or transformed features
+can be hard to grasp.
+
+Logistic regression satisfies the criterion structurally because its coefficients
+determine the prediction directly
+\citep{liptonMythosModelInterpretability2018}. Their interpretation nevertheless
+depends on feature scaling, categorical coding and the correlation structure, and
+they act on the log-odds rather than directly on the probability.
+
+The EBM provides a non-linear yet component-wise readable \emph{glass-box}
+alternative. It is a generalised additive model extended by a limited number of
+pairwise interactions, a GA\textsuperscript{2}M in the lineage of
+\citet{louAccurateIntelligibleModels2013} and
+\citet{noriInterpretMLUnifiedFramework2019}. It breaks down the link-transformed
+expectation of default into
+\begin{equation}
+g\!\left(\mathbb{E}[y \mid x]\right) \;=\; \beta_0 \;+\; \sum_{j} f_j(x_j)
+\;+\!\! \sum_{(j,k)\,\in\,\mathcal{I}} \!\! f_{jk}(x_j, x_k),
+\label{eq:ebm}
+\end{equation}
+where $g$ is the link function, the logit here, so that the terms act on the log-odds
+as in logistic regression. Each $f_j$ is a piecewise constant step function over the
+binned values of feature~$j$, and $\mathcal{I}$ is the set of selected
+interaction terms. Every term can
+be plotted and read off exactly, in the sense that the terms reproduce the model
+output rather than approximate it. They describe learned associations, not causal
+effects \citep{amekoeExploringAccuracyInterpretability2024b}.
+
+Gradient-boosted tree ensembles are constructed the other way round, building shallow
+trees in stages, each fitted to the \emph{negative} gradient of the loss with respect to
+the current ensemble prediction, the pseudo-residuals \citep{friedmanGreedyFunctionApproximation2001}. XGBoost \citep{chenXGBoostScalableTree2016} adds penalties on
+leaf weights and tree complexity; CatBoost \citep{prokhorenkovaCatBoostUnbiasedBoosting2018} grows symmetric
+trees and offers ordered target statistics for categorical variables. A single such
+tree would be readable, an
+ensemble of several hundred is not, because the decision logic is distributed across
+them. An attribution method must therefore be applied on top \citep{zouInterpretableCreditScoring2025}.
+
+This thesis accordingly distinguishes intrinsic explanations, read directly from the
+fitted logistic regression and EBM, from post-hoc attributions computed for XGBoost and
+CatBoost.
+
+
+
+\subsection{Profit-Based Evaluation}\label{sec:emp}
+
+ROC-AUC evaluates how well a model ranks applicants but does not capture
+the asymmetric economic consequences of lending decisions. Rejecting an
+applicant who would repay forfeits the return on the loan, whereas granting
+credit to an applicant who defaults causes a loss on the principal.
+Cost-sensitive measures incorporate these consequences but require economic
+parameters that are rarely known with certainty and may affect the resulting
+ranking of models
+\citep{verbrakenDevelopmentApplicationConsumer2014}.
+
+The Expected Maximum Profit (EMP) measure accounts for this uncertainty by
+averaging the maximum attainable return over a distribution of loss severities.
+\citet{verbrakenNovelProfitMaximizing2013a} introduce the general framework,
+which \citet{verbrakenDevelopmentApplicationConsumer2014} adapt to consumer
+credit scoring. Let $\pi_D$ and $\pi_N$ denote the proportions of defaulters
+and non-defaulters, and let $R_D(t)$ and $R_N(t)$ denote the respective
+fractions rejected at cut-off $t$. The loss fraction associated with a default
+is $\lambda$, the loss given default expressed as a fraction of the principal.
+The return forgone by rejecting a non-defaulting applicant is represented by
+$\mathrm{ROI}$. Profit per applicant and per unit of principal is therefore
+
+\begin{equation}
+P(t;\lambda,\mathrm{ROI})
+= \lambda\,\pi_D R_D(t)
+- \mathrm{ROI}\,\pi_N R_N(t).
+\label{eq:profit}
+\end{equation}
+
+Profit is measured relative to granting all applications. Rejecting nobody
+sets both rejection rates to zero; because this policy remains available,
+the maximised profit cannot be negative.
+
+Rather than fixing $\lambda$ at a single value, EMP integrates the maximum
+attainable return over its mixed distribution $H$:
+
+\begin{equation}
+\mathrm{EMP}
+= \int_{[0,1]}
+P\bigl(t^*(\lambda);\lambda,\mathrm{ROI}\bigr)\,
+\mathrm{d}H(\lambda),
+\qquad
+t^*(\lambda)
+= \arg\max_t P(t;\lambda,\mathrm{ROI}).
+\label{eq:emp}
+\end{equation}
+
+The loss-given-default distribution and the assumed return are specified in the
+empirical design. EMP remains conditional on these assumptions and on the class
+prevalence and should not be interpreted as realised portfolio profit. Absolute EMP
+values are therefore compared between models within one dataset rather than across
+datasets.
+
+\subsection{Explainability in Machine Learning}\label{sec:xai}
+
+Explainability methods are commonly organised along two axes: whether an
+explanation is \emph{inherent} to the model or produced \emph{post hoc}, and
+whether it is \emph{global} (describing the whole model) or \emph{local}
+(describing a single decision) \citep{nautaAnecdotalEvidenceQuantitative2023}. \citet{liptonMythosModelInterpretability2018} further
+decomposes interpretability into simulatability, decomposability and algorithmic
+transparency, and stresses that a post-hoc explanation is not the same as
+transparency. 
+
+Additive feature contributions provide a common representation over the four
+evaluated pipelines. \citet{lundbergUnifiedApproachInterpreting2017} derive SHapley Additive exPlanations (SHAP) from the Shapley value in cooperative game theory:
+features are treated as players, the prediction as the payout, and each attribution
+as a feature's average marginal contribution across feature coalitions. The resulting
+explanation is additive: the attributions and a base value reconstruct the prediction.
+Within the class of additive feature-attribution methods, Shapley values uniquely
+satisfy local accuracy, missingness and consistency.
+
+Several limitations qualify what such an attribution establishes. It describes the
+\emph{model}, not the world: a large attribution indicates that the fitted model relies
+on a feature, not that the feature causes default
+\citep{rudinStopExplainingBlack2019a,
+liptonMythosModelInterpretability2018}. Attributions are also defined relative to a
+reference distribution, so the same prediction can receive different attributions
+under different references
+\citep{nautaAnecdotalEvidenceQuantitative2023}. With correlated features, the
+allocation of attribution among them additionally depends on the assumed dependence
+structure \citep{aasExplainingIndividualPredictions2021}.
+
+Two quantitative properties recur in this literature: \emph{stability}, the
+reproducibility of explanations under resampling or retraining, and
+\emph{faithfulness}, the extent to which an explanation accurately reflects the
+behaviour of the fitted model
+\citep{nautaAnecdotalEvidenceQuantitative2023}.
+
+Separately from these properties of individual attribution procedures,
+\citet{rudinStopExplainingBlack2019a} argues that high-stakes settings should prefer
+inherently interpretable models over black boxes explained post hoc. This is a
+structural argument about the relation between the model and its explanation, but it does
+not establish that every post-hoc attribution is numerically inaccurate or that every
+intrinsically interpretable model is readily understandable.
+
+\subsection{Regulatory Framework}\label{sec:regulatory}
+
+Credit scoring in the European Union is governed principally by the AI Act and the
+GDPR \citep{mullerAIbasedCreditScoring2025}. The AI Act
+(Regulation~(EU)~2024/1689) first requires a system to fall within the definition of
+an AI system under Article~3(1) \citep{EUAIAct2024}. Whether conventional statistical
+scorecards satisfy that definition remains relevant: the Commission guidance
+discussed by \citet{mullerAIbasedCreditScoring2025} treats well-established linear and
+logistic regression as outside the definition, but the guidance is not legally
+binding.
+
+Assuming that a deployed scoring system falls within Article~3(1),
+creditworthiness assessment is listed in Annex~III(5)(b). Because the use considered
+here profiles natural persons and materially informs the credit decision, the
+derogation in Article~6(3) would not apply. The classification therefore depends on
+the system along with its intended use rather than on the selected model family.
+
+For covered high-risk systems, the Act allocates obligations between providers and
+deployers. Article~13 specifies transparency plus information requirements for the
+system and its instructions for use, while Article~16(a) requires the provider to
+ensure that these requirements are met. Article~15 requires an appropriate level of
+accuracy and robustness. Article~86 provides a right to an explanation against the
+deployer only under its statutory conditions: the decision must be based on the
+system's output and adversely affect the person in a legally or similarly significant
+way, and the right applies only insofar as it does not already follow from other Union
+law. GDPR Article~15(1)(h), by contrast, concerns the controller \citep{EUAIAct2024, mullerAIbasedCreditScoring2025, GDPR2016}.
+
+The GDPR applies independently. Article~22 provides a right, subject to exceptions,
+not to be subject to a decision based solely on automated processing that produces
+legal or similarly significant effects \citep{GDPR2016}. In
+\emph{SCHUFA Holding} (C-634/21), the Court held that generating a credit score can
+itself constitute such a decision where a third party draws strongly on it
+\citep{OQGegenLand2023, mullerAIbasedCreditScoring2025}.
+
+In \citet{CJEU2025DunBradstreet}, in the context of automated decision-making
+within Article~22(1), the Court held that Article~15(1)(h) requires an intelligible
+account of the procedure actually applied; disclosure of the algorithm or formula
+alone is insufficient. Trade-secret
+protection does not automatically preclude access. Where protected information is
+involved, it must be made available to the competent authority or court for the
+required balancing of interests.
+
+The relevant high-risk requirements for Annex-III systems apply from
+2~December~2027 under Regulation~(EU)~2026/1744
+\citep{EUAIOmnibus2026}. The Act prescribes no numerical threshold for the
+empirical metrics used in this thesis. ROC-AUC, calibration measures and attribution
+analyses may constitute technical evidence, but they establish neither compliance nor
+the legal sufficiency of an explanation.
+
+Because this thesis evaluates models offline rather than assessing a deployed AI
+system, the regulatory provisions serve as an interpretive benchmark. The analysis
+does not constitute a conformity assessment.
+
+\section{Related Work}
+
+\subsection{Predictive and Economic Performance in Credit Scoring}
+
+The benchmark study of
+\citet{lessmannBenchmarkingStateoftheartClassification2015} found that
+gradient-boosted and ensemble classifiers tend to outperform logistic regression in
+discrimination across many credit datasets, although the advantage depends on the
+dataset and evaluation metric. Reviewing 74 primary studies published between 2010
+and 2018, \citet{dastileStatisticalMachineLearning2020a} similarly report that
+boosting is the most frequently used and among the strongest-performing ensemble
+approaches in credit scoring.
+
+More recent work indicates that the practical difference can be smaller. Additive
+models with interactions such as the EBM achieve predictive performance competitive
+with black-box ensembles on tabular data
+\citep{changHowInterpretableTrustworthy2021}. On German Credit, an additive boosting
+model restricted to single-feature as well as pairwise terms slightly outperforms an
+unconstrained XGBoost configuration while remaining inherently interpretable
+\citep{zouInterpretableCreditScoring2025}. The best black-box and interpretable
+models examined by \citet{dessainCostExplainabilityAI2023} differ by fifteen to twenty
+basis points of return. Across 45 tabular datasets,
+\citet{amekoeExploringAccuracyInterpretability2024b} report an average relative
+accuracy loss below 4\% for intelligible models such as the EBM; this evidence
+concerns tabular learning broadly rather than credit scoring specifically.
+
+The work closest to this thesis is the preprint by
+\citet{schwartzEnhancingMLModels2025}, which compares interpretable models with
+XGBoost on Lending Club and reports similar observed performance for the EBM and
+XGBoost in the settings examined. It uses SHAP only for feature selection and reports
+neither explanation stability nor a profit metric.
+
+A second strand evaluates credit-scoring models economically rather than
+statistically. \citet{devosPROFITMAXIMIZINGLOGISTIC2018} fit logistic regression under
+a profit-maximising objective,
+\citet{chroscickiAdvantageCaseTailoredInformation2022} examine model development
+against calculated profit rather than statistical criteria alone, and
+\citet{xuProfitRiskdrivenCredit2024} optimise profit and risk jointly while treating
+the cost parameters themselves as uncertain.
+
+\subsection{Explainability Methods and Stability}
+
+\citet{hlongwaneNovelFrameworkEnhancing2024} examine how SHAP can support the
+interpretation of traditional scorecards. Moving beyond the presentation of feature
+attributions alone, \citet{amekoeExploringAccuracyInterpretability2024b} include
+\emph{stability}, the consistency of explanations under changes that should not
+materially alter them, and \emph{faithfulness}, the extent to which an explanation
+reflects the behaviour of the fitted model, among their evaluation criteria. Together,
+these studies illustrate that explanation evaluation is multidimensional and cannot
+be reduced to a single attribution output.
+
+\citet{ballegeerEvaluatingStabilityModel2025b} provide a multi-factor analysis of
+explanation stability in credit scoring, examining how cost-sensitive objectives,
+class imbalance, learner and explainer choices, and model retraining affect SHAP and
+LIME explanations. Their study provides evidence that explanation stability depends
+on the wider modelling-and-explanation pipeline rather than on the explainer in
+isolation. 
+
+\subsection{Research Gap}\label{sec:gap}
+
+The central research gap concerns the empirical status of the presumed
+performance--explainability trade-off in credit scoring. \citet{bahloolPerformanceFairnessExplainability2026} find that predictive
+performance, fairness and explainability are frequently studied in isolation and
+that the trade-off between performance and explainability is more often assumed
+than empirically quantified. Much of the literature consequently starts from a
+comparatively complex predictive model and subsequently examines how its outputs
+can be explained post hoc. Explainability is thereby commonly treated
+as an additional layer following model selection rather than as a consideration
+that may inform the initial choice of model \citep{bahloolPerformanceFairnessExplainability2026}.
+
+This leaves an earlier model-choice question unresolved. The relevant issue is not
+only how to explain a boosted-tree ensemble after it has been selected, but whether
+a model whose fitted prediction function is directly inspectable can itself
+constitute a viable scoring choice
+\citep[see][]{rudinStopExplainingBlack2019a}. The
+EBM makes this question empirically relevant because it can represent nonlinear
+feature effects and selected pairwise interactions while retaining an additive
+glass-box structure
+\citep{louAccurateIntelligibleModels2013,
+noriInterpretMLUnifiedFramework2019}. It therefore permits examination of the
+presumed trade-off without equating inherent interpretability with a strictly
+linear functional form.
+
+Existing comparisons provide initial support for this model-choice perspective.
+\citet{schwartzEnhancingMLModels2025} and
+\citet{amekoeExploringAccuracyInterpretability2024b} report similar observed
+predictive performance for the EBM and more opaque alternatives in their respective
+settings, supporting its consideration as a viable model option rather than merely
+a transparency-oriented substitute. Read in light of
+\citet{bahloolPerformanceFairnessExplainability2026}, however, these outcomes do
+not settle the presumed trade-off. Instead, they motivate closer examination of
+whether similar observed performance recurs across datasets and extends to
+profit-based performance. The remaining gap is therefore not the complete absence of
+promising evidence for the EBM, but the limited basis for judging whether that
+evidence continues across empirical settings and evaluation dimensions.
+

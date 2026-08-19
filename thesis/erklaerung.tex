@@ -1,0 +1,114 @@
+% Hilfsbefehl: Wert linksbündig auf der Linie, kleine Beschriftung darunter
+\newcommand{\fillline}[3]{%
+  \begin{minipage}[b]{#1}%
+    \raggedright
+    \underline{\makebox[\linewidth][l]{\strut #2}}\\[1pt]
+    {\scriptsize #3}%
+  \end{minipage}%
+}
+
+\noindent
+\section*{Selbstständigkeitserklärung}
+
+\noindent
+{\small für die Abgabe von Bachelor-, Master-, Studien- und Hausarbeiten (§~63 Absatz~5 HG)}
+
+% Name / Vorname und Matrikelnummer werden automatisch eingefügt
+\noindent
+\fillline{0.60\textwidth}{\textbf{\name}}{Vorname Nachname}%
+\hfill
+\fillline{0.35\textwidth}{\textbf{\matrikelnummer}}{Matrikelnummer}
+
+\noindent
+{\small Hiermit versichere ich, dass ich meine Bachelorarbeit mit dem Titel}
+
+% Titel wird automatisch eingefügt; harte Umbrüche (\\) im Titel werden hier
+% ignoriert, der Titel bricht nur bei Bedarf automatisch um
+\noindent
+\begin{minipage}[b]{\textwidth}
+    \raggedright
+    {\renewcommand{\\}{}\textbf{\titel\strut}}\par
+    \rule{\linewidth}{0.2pt}
+\end{minipage}
+
+
+\noindent
+{\small– bei einer Gruppenarbeit den entsprechend gekennzeichneten Teil der Arbeit – selbstständig verfasst und keine anderen als die angegebenen Quellen und Hilfsmittel benutzt habe.
+
+\noindent
+Die Stellen der Arbeit, die ich anderen Werken dem Wortlaut oder dem Sinn nach entnommen habe, habe ich in jedem Fall unter Angabe der Quellen entsprechend der wissenschaftlichen Standards sowohl an den Stellen im Text als auch im Literaturverzeichnis kenntlich gemacht. Das Gleiche gilt auch für Tabellen, Skizzen, Zeichnungen, bildliche Darstellungen usw.
+
+\noindent
+Sofern ich bei der Erstellung der Arbeit KI-generierte Inhalte (Text, Darstellungen, Programmcode etc.) verwendet habe, habe ich den Einsatz der KI-Tools sachgerecht dokumentiert und transparent gekennzeichnet. Hierbei habe ich mich an die Vorgaben der Prüfenden (siehe ``Erklärung über den Einsatz von Künstlicher Intelligenz'') gehalten.
+
+\noindent
+Mir ist bekannt, dass die ungekennzeichnete oder nicht angemessen gekennzeichnete Übernahme von fremdem geistigem Eigentum unabhängig von dessen Herkunft (auch aus dem Internet) oder die ungekennzeichnete oder nicht angemessen gekennzeichnete Übernahme von KI-generierten Texten eine Täuschung darstellen kann, die zur Folge hat, dass die Arbeit als mit der Note \quotedblbase mangelhaft\textquotedblleft{} (5,0) bewertet gilt. Dies umfasst auch die ungekennzeichnete oder nicht angemessen gekennzeichnete Übernahme von über das Allgemeinwissen hinausgehenden Fakten, Ideen, Argumenten oder spezifischen Formulierungen sowie deren Paraphrasierung oder Übersetzung.
+
+\noindent
+Ich habe die Arbeit nicht, auch nicht auszugsweise, für eine andere abgeschlossene Prüfung angefertigt.}
+
+\medskip
+
+% Ort und Datum wird automatisch eingefügt
+\noindent
+\fillline{0.55\textwidth}{\textbf{Paderborn, \abgabedatum}}{Ort und Datum}%
+\hfill
+\fillline{0.40\textwidth}{}{Unterschrift}
+
+\noindent
+{\tiny Selbstständigkeitserklärung \textperiodcentered{} Stand: November 2025}
+
+\noindent
+\section*{Erklärung über den Einsatz von Künstlicher Intelligenz}
+
+Zur Erstellung dieser Arbeit wurde Künstliche Intelligenz eingesetzt.
+Der Inhalt wurde anschließend überprüft, überarbeitet und die Verantwortung dafür liegt vollständig bei mir. Tabelle \ref{tab:ki_nutzung} zeigt, welche Arbeitsschritte mithilfe von KI‑Tools unterstützt wurden, welche Tools dabei zum Einsatz kamen und zu welchem Zweck sie genutzt wurden.
+
+% #####
+% Weitere Informationen zum Ausfüllen der Tabelle finden Sie unter:
+% https://www.uni-paderborn.de/fileadmin/lehre/Handreichung_zur_Dokumentation_und_Kennzeichnung_von_KI-Tools.pdf
+% #####
+
+\bigskip
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|>{\raggedright\arraybackslash}m{3.5cm}|>{\raggedright\arraybackslash}m{4cm}|>{\raggedright\arraybackslash}m{6.5cm}|}
+\hline
+\centering\textbf{Arbeitsschritt}\arraybackslash &
+\centering\textbf{Tool}\arraybackslash &
+\centering\textbf{Verwendung}\arraybackslash \\
+\hline
+Konzeption & Claude (Anthropic)\newline ChatGPT (OpenAI)\newline Gemini (Google) & Diskussion, Konzeption und Strukturierung des Forschungsdesigns.\\
+\hline
+Einleitung & ChatGPT (OpenAI)\newline Claude (Anthropic) & Entwurf und sprachliche Überarbeitung englischer Textpassagen der Einleitung.\\
+\hline
+Literaturrecherche & NotebookLM (Google) & Zusammenfassung und Strukturierung vorhandener Quellen sowie Identifikation potenziell geeigneter weiterer Literatur auf deren Grundlage. \\
+\hline
+Endkorrektur & Claude (Anthropic)\newline ChatGPT (OpenAI)\newline Gemini (Google) & Prüfung auf sprachliche Korrektheit, Konsistenz und Struktur.\\
+\hline
+Programmieren & Claude Code (Anthropic) & Unterstützung bei der Python-Programmierung von Notebooks, Pipelines sowie Auswertungs- und Plot-Skripten. \\
+\hline
+Sonstiges & ChatGPT (OpenAI)\newline Claude (Anthropic) & Sprachliche Überarbeitung weiterer englischer Textpassagen sowie Unterstützung beim LaTeX-Satz (Tabellen, Grafiken und Formatierung).\\
+\hline
+\end{tabular}
+\caption{Verwendung von Künstlicher Intelligenz in der Arbeit}
+\label{tab:ki_nutzung}
+\end{table}
+
+\bigskip
+
+Paderborn, \abgabedatum
+
+\begin{flushright}
+\bigskip
+\bigskip
+\bigskip
+
+---------------------------------------------\\
+\name
+\end{flushright}
+
+
+
+\bigskip

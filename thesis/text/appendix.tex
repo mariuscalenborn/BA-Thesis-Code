@@ -1,0 +1,300 @@
+\appendix
+
+\chapter{Implementation Details}\label{app:repro_details}
+
+\section{Search Space and Selected Hyperparameters}\label{app:hyperparams}
+
+Table~\ref{tab:hp_all} gives the prespecified search space and, beside it, the
+configuration selected once per model and dataset, which is the configuration that was refitted,
+calibrated, evaluated and explained. Settings not listed use the library defaults. The
+search space is identical across datasets. The logistic-regression grid is enumerated
+exhaustively at its $6$ points; the remaining spaces are sampled by randomized search at
+budgets of $20$, $30$ and $20$ evaluations, and the EBM's \texttt{outer\_bags} is fixed
+at $8$.
+
+\begin{table}[htbp]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{@{}ll>{\raggedright\arraybackslash}p{3.0cm}cccc@{}}
+\toprule
+                 &                         &                        & \multicolumn{4}{c}{\textbf{Selected}}                                                  \\
+\cmidrule(lr){4-7}
+\textbf{Model}   & \textbf{Hyperparameter} & \textbf{Search values} & \shortstack{German\\Credit} & Taiwan & \shortstack{Home\\Credit} & \shortstack{Lending\\Club} \\
+\midrule
+LR               & $C$                     & 0.001, 0.01, 0.1, 1, 10, 100 & 0.01  & 100   & 10    & 10      \\
+\midrule
+EBM              & interactions            & 10, 20                       & 20    & 10    & 20    & 20      \\
+                 & max\_leaves             & 2, 3, 5                      & 2     & 3     & 2     & 2       \\
+                 & max\_bins               & 256, 512                     & 256   & 512   & 256   & 512     \\
+                 & learning rate           & 0.005, 0.01, 0.02, 0.05      & 0.01  & 0.05  & 0.01  & 0.05    \\
+                 & min\_samples\_leaf      & 2, 5                         & 5     & 5     & 5     & 2       \\
+\midrule
+XGBoost          & max\_depth              & 4, 6, 8                      & 4     & 6     & 4     & 6       \\
+                 & learning rate           & 0.03, 0.05, 0.1              & 0.03  & 0.05  & 0.03  & 0.03    \\
+                 & subsample               & 0.8, 1.0                     & 0.8   & 0.8   & 0.8   & 0.8     \\
+                 & colsample\_bytree       & 0.8, 1.0                     & 1.0   & 0.8   & 1.0   & 1.0     \\
+                 & min\_child\_weight      & 1, 5                         & 5     & 5     & 5     & 1       \\
+                 & gamma                   & 0, 0.1                       & 0     & 0     & 0.1   & 0       \\
+                 & n\_estimators           & early stopping               & 92    & 78    & 895   & 1{,}762 \\
+\midrule
+CatBoost         & depth                   & 4, 6, 8                      & 8     & 6     & 4     & 6       \\
+                 & learning rate           & 0.03, 0.05, 0.1              & 0.1   & 0.05  & 0.05  & 0.1     \\
+                 & l2\_leaf\_reg           & 1, 3, 5                      & 3     & 5     & 3     & 5       \\
+                 & iterations              & early stopping               & 37    & 192   & 941   & 1{,}530 \\
+\bottomrule
+\end{tabular}
+\caption[Search space and selected hyperparameters]{Search space and selected
+  hyperparameters.}
+\label{tab:hp_all}
+\end{table}
+
+\FloatBarrier
+
+\chapter{Supplementary Results}\label{app:supplementary}
+
+\section{Performance and Bootstrap Details}
+
+\begingroup
+\makeatletter
+\setlength{\@fptop}{0pt}
+\makeatother
+
+\begin{table}[!t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}llrcrc@{}}
+\toprule
+                 &                     & \multicolumn{2}{c}{$\Delta$ROC-AUC} & \multicolumn{2}{c}{\shortstack{$\Delta$EMP\\(percentage points)}} \\
+\cmidrule(lr){3-4}\cmidrule(lr){5-6}
+\textbf{Dataset} & \textbf{Pair}~$a-b$ & \textbf{Point} & \shortstack{\textbf{95\% bootstrap}\\\textbf{interval}} & \textbf{Point} & \shortstack{\textbf{95\% bootstrap}\\\textbf{interval}} \\
+\midrule
+German Credit    & LR $-$ EBM   & $-0.0033$ & $[-0.0368,\ +0.0270]$   & $+0.088$  & $[-0.495,\ +0.464]$ \\
+                 & LR $-$ XGB   & $+0.0010$ & $[-0.0362,\ +0.0348]$   & $+0.212$  & $[-0.387,\ +0.690]$ \\
+                 & LR $-$ CatB  & $-0.0251$ & $[-0.0664,\ +0.0107]$   & $+0.042$  & $[-0.643,\ +0.448]$ \\
+                 & EBM $-$ XGB  & $+0.0043$ & $[-0.0256,\ +0.0337]$   & $+0.125$  & $[-0.248,\ +0.543]$ \\
+                 & EBM $-$ CatB & $-0.0218$ & $[-0.0614,\ +0.0169]$   & $-0.046$  & $[-0.569,\ +0.434]$ \\
+                 & XGB $-$ CatB & $-0.0261$ & $[-0.0576,\ +0.0058]$   & $-0.171$  & $[-0.703,\ +0.293]$ \\
+\midrule
+Taiwan           & LR $-$ EBM   & $-0.0722$ & $[-0.0846,\ -0.0589]$   & $-0.376$  & $[-0.474,\ -0.271]$ \\
+                 & LR $-$ XGB   & $-0.0705$ & $[-0.0835,\ -0.0576]$   & $-0.336$  & $[-0.433,\ -0.231]$ \\
+                 & LR $-$ CatB  & $-0.0710$ & $[-0.0838,\ -0.0587]$   & $-0.401$  & $[-0.500,\ -0.298]$ \\
+                 & EBM $-$ XGB  & $+0.0016$ & $[-0.0024,\ +0.0052]$   & $+0.040$  & $[-0.014,\ +0.099]$ \\
+                 & EBM $-$ CatB & $+0.0012$ & $[-0.0024,\ +0.0049]$   & $-0.026$  & $[-0.075,\ +0.023]$ \\
+                 & XGB $-$ CatB & $-0.0004$ & $[-0.0036,\ +0.0032]$   & $-0.065$  & $[-0.119,\ -0.017]$ \\
+\midrule
+Home Credit      & LR $-$ EBM   & $-0.0121$ & $[-0.0146,\ -0.0096]$   & $-0.028$  & $[-0.040,\ -0.017]$ \\
+                 & LR $-$ XGB   & $-0.0105$ & $[-0.0132,\ -0.0079]$   & $-0.027$  & $[-0.042,\ -0.014]$ \\
+                 & LR $-$ CatB  & $-0.0105$ & $[-0.0130,\ -0.0080]$   & $-0.026$  & $[-0.040,\ -0.013]$ \\
+                 & EBM $-$ XGB  & $+0.0016$ & $[-0.000006,\ +0.0031]$ & $+0.001$  & $[-0.007,\ +0.010]$ \\
+                 & EBM $-$ CatB & $+0.0016$ & $[+0.0003,\ +0.0030]$   & $+0.002$  & $[-0.006,\ +0.010]$ \\
+                 & XGB $-$ CatB & $+0.0000$ & $[-0.0012,\ +0.0012]$   & $+0.0004$ & $[-0.007,\ +0.008]$ \\
+\midrule
+Lending Club     & LR $-$ EBM   & $-0.0131$ & $[-0.0141,\ -0.0122]$   & $-0.083$  & $[-0.091,\ -0.075]$ \\
+                 & LR $-$ XGB   & $-0.0209$ & $[-0.0220,\ -0.0197]$   & $-0.130$  & $[-0.139,\ -0.120]$ \\
+                 & LR $-$ CatB  & $-0.0213$ & $[-0.0224,\ -0.0201]$   & $-0.133$  & $[-0.142,\ -0.124]$ \\
+                 & EBM $-$ XGB  & $-0.0078$ & $[-0.0085,\ -0.0069]$   & $-0.047$  & $[-0.054,\ -0.040]$ \\
+                 & EBM $-$ CatB & $-0.0081$ & $[-0.0088,\ -0.0074]$   & $-0.050$  & $[-0.057,\ -0.043]$ \\
+                 & XGB $-$ CatB & $-0.0004$ & $[-0.0008,\ +0.0001]$   & $-0.003$  & $[-0.008,\ +0.001]$ \\
+\bottomrule
+\end{tabular}
+\caption[Paired differences in ROC-AUC and EMP]{Paired test-set differences
+  ($\Delta=a-b$) with unadjusted 95\% percentile-bootstrap intervals; positive values
+  denote a higher numerical value for model $a$. EMP differences are percentage points.}
+\label{tab:delta_pairs}
+\end{table}
+
+\begin{table}[!t]
+\centering
+\fontsize{8.5pt}{10pt}\selectfont
+\setlength{\tabcolsep}{2pt}
+\begin{tabular}{@{}llrcrc@{}}
+\toprule
+                 &                     & \multicolumn{2}{c}{$\Delta$AP} & \multicolumn{2}{c}{$\Delta$Brier score} \\
+\cmidrule(lr){3-4}\cmidrule(lr){5-6}
+\textbf{Dataset} & \textbf{Pair}~$a-b$ & \textbf{Point} & \shortstack{\textbf{95\% bootstrap}\\\textbf{interval}} & \textbf{Point} & \shortstack{\textbf{95\% bootstrap}\\\textbf{interval}} \\
+\midrule
+German Credit    & LR $-$ EBM   & $+0.0508$ & $[-0.0261,\ +0.1206]$ & $-0.001121$ & $[-0.016059,\ +0.014775]$ \\
+                 & LR $-$ XGB   & $+0.0148$ & $[-0.0489,\ +0.0718]$ & $-0.007013$ & $[-0.021542,\ +0.007840]$ \\
+                 & LR $-$ CatB  & $-0.0392$ & $[-0.1197,\ +0.0359]$ & $+0.004357$ & $[-0.015050,\ +0.025222]$ \\
+                 & EBM $-$ XGB  & $-0.0361$ & $[-0.1085,\ +0.0449]$ & $-0.005892$ & $[-0.018557,\ +0.006894]$ \\
+                 & EBM $-$ CatB & $-0.0900$ & $[-0.1761,\ +0.0001]$ & $+0.005478$ & $[-0.012942,\ +0.023911]$ \\
+                 & XGB $-$ CatB & $-0.0539$ & $[-0.1190,\ +0.0125]$ & $+0.011370$ & $[-0.003607,\ +0.026075]$ \\
+\midrule
+Taiwan           & LR $-$ EBM   & $-0.0576$ & $[-0.0743,\ -0.0384]$ & $+0.007031$ & $[+0.004854,\ +0.008976]$ \\
+                 & LR $-$ XGB   & $-0.0628$ & $[-0.0789,\ -0.0455]$ & $+0.007475$ & $[+0.005495,\ +0.009332]$ \\
+                 & LR $-$ CatB  & $-0.0618$ & $[-0.0768,\ -0.0452]$ & $+0.007465$ & $[+0.005665,\ +0.009194]$ \\
+                 & EBM $-$ XGB  & $-0.0053$ & $[-0.0164,\ +0.0053]$ & $+0.000444$ & $[-0.000640,\ +0.001660]$ \\
+                 & EBM $-$ CatB & $-0.0043$ & $[-0.0143,\ +0.0049]$ & $+0.000434$ & $[-0.000506,\ +0.001531]$ \\
+                 & XGB $-$ CatB & $+0.0010$ & $[-0.0075,\ +0.0095]$ & $-0.000010$ & $[-0.000917,\ +0.000877]$ \\
+\midrule
+Home Credit      & LR $-$ EBM   & $-0.0157$ & $[-0.0202,\ -0.0113]$ & $+0.000771$ & $[+0.000596,\ +0.000939]$ \\
+                 & LR $-$ XGB   & $-0.0141$ & $[-0.0193,\ -0.0087]$ & $+0.000715$ & $[+0.000510,\ +0.000906]$ \\
+                 & LR $-$ CatB  & $-0.0140$ & $[-0.0183,\ -0.0090]$ & $+0.000670$ & $[+0.000493,\ +0.000836]$ \\
+                 & EBM $-$ XGB  & $+0.0016$ & $[-0.0013,\ +0.0048]$ & $-0.000056$ & $[-0.000167,\ +0.000059]$ \\
+                 & EBM $-$ CatB & $+0.0017$ & $[-0.0007,\ +0.0043]$ & $-0.000101$ & $[-0.000201,\ -0.000004]$ \\
+                 & XGB $-$ CatB & $+0.0001$ & $[-0.0023,\ +0.0024]$ & $-0.000044$ & $[-0.000130,\ +0.000033]$ \\
+\midrule
+Lending Club     & LR $-$ EBM   & $-0.0164$ & $[-0.0182,\ -0.0147]$ & $+0.001962$ & $[+0.001815,\ +0.002114]$ \\
+                 & LR $-$ XGB   & $-0.0265$ & $[-0.0284,\ -0.0245]$ & $+0.003212$ & $[+0.003022,\ +0.003384]$ \\
+                 & LR $-$ CatB  & $-0.0273$ & $[-0.0291,\ -0.0253]$ & $+0.003306$ & $[+0.003122,\ +0.003478]$ \\
+                 & EBM $-$ XGB  & $-0.0101$ & $[-0.0115,\ -0.0086]$ & $+0.001250$ & $[+0.001107,\ +0.001373]$ \\
+                 & EBM $-$ CatB & $-0.0109$ & $[-0.0122,\ -0.0096]$ & $+0.001344$ & $[+0.001213,\ +0.001458]$ \\
+                 & XGB $-$ CatB & $-0.0008$ & $[-0.0017,\ +0.0001]$ & $+0.000094$ & $[+0.000020,\ +0.000179]$ \\
+\bottomrule
+\end{tabular}
+\caption[Paired differences in AP and Brier score]{Paired test-set differences
+  ($\Delta=a-b$) in AP and the calibrated Brier score, conventions as in
+  Table~\ref{tab:delta_pairs}; a lower Brier score is preferable.}
+\label{tab:delta_pairs_ap_brier}
+\end{table}
+
+\begin{table}[!t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}llrcrc@{}}
+\toprule
+                 &                     & \multicolumn{2}{c}{$\Delta$Balanced accuracy} & \multicolumn{2}{c}{$\Delta F_1$} \\
+\cmidrule(lr){3-4}\cmidrule(lr){5-6}
+\textbf{Dataset} & \textbf{Pair}~$a-b$ & \textbf{Point} & \shortstack{\textbf{95\% bootstrap}\\\textbf{interval}} & \textbf{Point} & \shortstack{\textbf{95\% bootstrap}\\\textbf{interval}} \\
+\midrule
+German Credit    & LR $-$ EBM   & $+0.0262$ & $[-0.0190,\ +0.0703]$ & $+0.0300$ & $[-0.0214,\ +0.0808]$ \\
+                 & LR $-$ XGB   & $+0.0310$ & $[-0.0155,\ +0.0810]$ & $+0.0336$ & $[-0.0208,\ +0.0907]$ \\
+                 & LR $-$ CatB  & $+0.0190$ & $[-0.0405,\ +0.0810]$ & $+0.0140$ & $[-0.0634,\ +0.0947]$ \\
+                 & EBM $-$ XGB  & $+0.0048$ & $[-0.0357,\ +0.0536]$ & $+0.0037$ & $[-0.0416,\ +0.0585]$ \\
+                 & EBM $-$ CatB & $-0.0071$ & $[-0.0631,\ +0.0536]$ & $-0.0160$ & $[-0.0877,\ +0.0643]$ \\
+                 & XGB $-$ CatB & $-0.0119$ & $[-0.0726,\ +0.0512]$ & $-0.0196$ & $[-0.0986,\ +0.0622]$ \\
+\midrule
+Taiwan           & LR $-$ EBM   & $-0.0354$ & $[-0.0464,\ -0.0248]$ & $-0.0408$ & $[-0.0570,\ -0.0252]$ \\
+                 & LR $-$ XGB   & $-0.0334$ & $[-0.0448,\ -0.0225]$ & $-0.0397$ & $[-0.0565,\ -0.0244]$ \\
+                 & LR $-$ CatB  & $-0.0418$ & $[-0.0534,\ -0.0307]$ & $-0.0488$ & $[-0.0655,\ -0.0323]$ \\
+                 & EBM $-$ XGB  & $+0.0020$ & $[-0.0055,\ +0.0089]$ & $+0.0011$ & $[-0.0087,\ +0.0105]$ \\
+                 & EBM $-$ CatB & $-0.0065$ & $[-0.0134,\ -0.0006]$ & $-0.0080$ & $[-0.0170,\ -0.0002]$ \\
+                 & XGB $-$ CatB & $-0.0084$ & $[-0.0151,\ -0.0022]$ & $-0.0091$ & $[-0.0182,\ -0.0006]$ \\
+\midrule
+Home Credit      & LR $-$ EBM   & $-0.0110$ & $[-0.0161,\ -0.0067]$ & $-0.0106$ & $[-0.0142,\ -0.0072]$ \\
+                 & LR $-$ XGB   & $-0.0087$ & $[-0.0136,\ -0.0044]$ & $-0.0009$ & $[-0.0046,\ +0.0021]$ \\
+                 & LR $-$ CatB  & $-0.0089$ & $[-0.0136,\ -0.0046]$ & $-0.0072$ & $[-0.0107,\ -0.0041]$ \\
+                 & EBM $-$ XGB  & $+0.0023$ & $[-0.0014,\ +0.0057]$ & $+0.0096$ & $[+0.0069,\ +0.0121]$ \\
+                 & EBM $-$ CatB & $+0.0022$ & $[-0.0010,\ +0.0051]$ & $+0.0034$ & $[+0.0010,\ +0.0056]$ \\
+                 & XGB $-$ CatB & $-0.0001$ & $[-0.0029,\ +0.0032]$ & $-0.0063$ & $[-0.0084,\ -0.0040]$ \\
+\midrule
+Lending Club     & LR $-$ EBM   & $-0.0109$ & $[-0.0125,\ -0.0093]$ & $-0.0116$ & $[-0.0132,\ -0.0100]$ \\
+                 & LR $-$ XGB   & $-0.0158$ & $[-0.0173,\ -0.0140]$ & $-0.0155$ & $[-0.0170,\ -0.0137]$ \\
+                 & LR $-$ CatB  & $-0.0164$ & $[-0.0181,\ -0.0147]$ & $-0.0177$ & $[-0.0195,\ -0.0160]$ \\
+                 & EBM $-$ XGB  & $-0.0048$ & $[-0.0062,\ -0.0033]$ & $-0.0039$ & $[-0.0052,\ -0.0023]$ \\
+                 & EBM $-$ CatB & $-0.0054$ & $[-0.0068,\ -0.0041]$ & $-0.0061$ & $[-0.0075,\ -0.0046]$ \\
+                 & XGB $-$ CatB & $-0.0006$ & $[-0.0017,\ +0.0005]$ & $-0.0022$ & $[-0.0033,\ -0.0010]$ \\
+\bottomrule
+\end{tabular}
+\caption[Paired differences in balanced accuracy and $F_1$]{Paired test-set differences
+  ($\Delta=a-b$) in balanced accuracy and $F_1$ at the frozen base-rate threshold,
+  conventions as in Table~\ref{tab:delta_pairs}.}
+\label{tab:delta_pairs_threshold}
+\end{table}
+
+\endgroup
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabular}{@{}llccc@{}}
+\toprule
+\textbf{Dataset} & \textbf{Model} & \textbf{Raw}~$\downarrow$ & \textbf{Calibrated}~$\downarrow$ & \textbf{Improvement} \\
+\midrule
+German Credit    & LR   & 0.178 & 0.153 & 0.026 \\
+                 & EBM  & 0.172 & 0.154 & 0.018 \\
+                 & XGB  & 0.174 & 0.160 & 0.014 \\
+                 & CatB & 0.152 & 0.148 & 0.004 \\
+\midrule
+Taiwan           & LR   & 0.212 & 0.145 & 0.067 \\
+                 & EBM  & 0.184 & 0.138 & 0.047 \\
+                 & XGB  & 0.181 & 0.137 & 0.044 \\
+                 & CatB & 0.182 & 0.137 & 0.045 \\
+\midrule
+Home Credit      & LR   & 0.203 & 0.069 & 0.135 \\
+                 & EBM  & 0.197 & 0.068 & 0.129 \\
+                 & XGB  & 0.193 & 0.068 & 0.125 \\
+                 & CatB & 0.196 & 0.068 & 0.128 \\
+\midrule
+Lending Club     & LR   & 0.218 & 0.145 & 0.073 \\
+                 & EBM  & 0.213 & 0.143 & 0.070 \\
+                 & XGB  & 0.207 & 0.142 & 0.065 \\
+                 & CatB & 0.209 & 0.142 & 0.067 \\
+\bottomrule
+\end{tabular}
+\caption[Brier score before and after isotonic calibration]{Brier score on uncalibrated
+  and on calibrated probability estimates; the improvement is the raw minus the
+  calibrated value.}
+\label{tab:brier_calibration}
+\end{table}
+
+\FloatBarrier
+
+
+\section{Attribution Diagnostics}
+
+\begin{table}[htbp]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}l>{\raggedright\arraybackslash}p{\dimexpr\textwidth-1.9cm\relax}@{}}
+\toprule
+\textbf{Model} & \textbf{Top five source features (point-estimate order)} \\
+\midrule
+\multicolumn{2}{@{}l}{\emph{German Credit}} \\
+LR   & checking\_account, purpose, credit\_history, personal\_status\_sex, savings\_account \\
+EBM  & checking\_account, purpose, duration\_months, credit\_amount, savings\_account       \\
+XGB  & checking\_account, duration\_months, purpose, savings\_account, credit\_amount       \\
+CatB & checking\_account, savings\_account, duration\_months, purpose, credit\_history      \\
+\midrule
+\multicolumn{2}{@{}l}{\emph{Taiwan}} \\
+LR   & PAY\_0, BILL\_AMT1, BILL\_AMT5, BILL\_AMT2, MARRIAGE \\
+EBM  & PAY\_0, LIMIT\_BAL, BILL\_AMT1, PAY\_2, PAY\_AMT2    \\
+XGB  & PAY\_0, LIMIT\_BAL, PAY\_2, BILL\_AMT1, PAY\_AMT2    \\
+CatB & PAY\_0, LIMIT\_BAL, PAY\_2, PAY\_3, PAY\_AMT2        \\
+\midrule
+\multicolumn{2}{@{}l}{\emph{Home Credit}} \\
+LR   & AMT\_GOODS\_PRICE, AMT\_CREDIT, EXT\_SOURCE\_3, EXT\_SOURCE\_2, CODE\_GENDER \\
+EBM  & AMT\_GOODS\_PRICE, AMT\_CREDIT, EXT\_SOURCE\_3, EXT\_SOURCE\_2, CODE\_GENDER \\
+XGB  & EXT\_SOURCE\_3, EXT\_SOURCE\_2, AMT\_GOODS\_PRICE, AMT\_CREDIT, CODE\_GENDER \\
+CatB & EXT\_SOURCE\_3, EXT\_SOURCE\_2, AMT\_GOODS\_PRICE, AMT\_CREDIT, CODE\_GENDER \\
+\midrule
+\multicolumn{2}{@{}l}{\emph{Lending Club}} \\
+LR   & term, loan\_amnt, dti, total\_acc, addr\_state              \\
+EBM  & term, loan\_amnt, dti, addr\_state, purpose                 \\
+XGB  & term, loan\_amnt, dti, fico\_range\_low, addr\_state        \\
+CatB & term, loan\_amnt, dti, addr\_state, acc\_open\_past\_24mths \\
+\bottomrule
+\end{tabular}
+\caption[Highest-ranked source features per model and dataset]{Five highest-ranked
+  source features per fitted model--explainer pipeline, ordered by mean absolute
+  attribution.}
+\label{tab:top_features}
+\end{table}
+
+Table~\ref{tab:pairwise_jaccard} resolves the mean pairwise top-ten Jaccard of
+Table~\ref{tab:cross_model_agreement} into the six model pairs it averages.
+
+\begin{table}[htbp]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+\textbf{Dataset} & \shortstack{LR\\EBM} & \shortstack{LR\\XGB} & \shortstack{LR\\CatB} & \shortstack{EBM\\XGB} & \shortstack{EBM\\CatB} & \shortstack{XGB\\CatB} \\
+\midrule
+German Credit & 0.818 & 0.667 & 0.667 & 0.667 & 0.667 & 0.818 \\
+Taiwan        & 0.429 & 0.333 & 0.429 & 0.667 & 0.667 & 0.667 \\
+Home Credit   & 0.667 & 0.538 & 0.538 & 0.667 & 0.667 & 0.818 \\
+Lending Club  & 0.667 & 0.667 & 0.538 & 0.818 & 0.667 & 0.818 \\
+\bottomrule
+\end{tabular}
+\caption[Pairwise top-ten Jaccard overlap]{Top-ten Jaccard overlap for each model pair on
+  the original global rankings.}
+\label{tab:pairwise_jaccard}
+\end{table}
+
+\FloatBarrier

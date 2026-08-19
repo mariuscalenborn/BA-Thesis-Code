@@ -29,6 +29,7 @@ refit, isotonic calibration, frozen thresholds, and exactly one test evaluation.
 | `tests/` | Split integrity, preprocessing leakage, weighting, search, thresholds, bootstrap, test-access governance, explanations, reproducibility |
 | `results/` | Metrics, selected hyperparameters, bootstrap intervals, explanation rankings and figures of the reported run |
 | `docs/protocol.md` | Binding methodology specification |
+| `thesis/` | LaTeX sources of the thesis itself: `thesis.tex`, the eight chapter files under `text/`, `bibliography.bib` and the figures in `img/` |
 
 ## Data
 

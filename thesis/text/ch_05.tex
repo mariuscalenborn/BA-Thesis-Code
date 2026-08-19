@@ -1,0 +1,346 @@
+\chapter{Discussion}\label{ch:discussion}
+
+
+\section{Performance and Economic Trade-offs}
+
+Across the four datasets evaluated here, the EBM shows no uniform performance
+disadvantage relative to the boosted ensembles. On Taiwan its ROC-AUC is effectively
+level with XGBoost and CatBoost, and all four paired EBM--ensemble intervals contain
+zero.
+
+The Home Credit result is of a different kind. Here the EBM--CatBoost difference in
+ROC-AUC lies entirely above zero, so on the second-largest test partition the only
+EBM--ensemble contrast that resolves runs in favour of the glass-box model rather than
+against it. It is the only such result in ROC-AUC, and it is narrow: the margin is
+$0.0016$, the companion contrast against XGBoost includes zero at its lower bound, and
+neither EMP interval resolves.
+
+What it establishes is that a resolved direction in favour of the glass-box model
+exists. Home Credit and Lending Club resolve in opposite directions, and the remaining
+two resolve nothing. This supports the claim that an additive
+model with a bounded number of fitted pairwise interactions can reach ensemble-level
+discrimination in some tabular credit settings, consistent with prior reports
+\citep{changHowInterpretableTrustworthy2021, dessainCostExplainabilityAI2023}. 
+
+German Credit and Lending Club mark different limits to that conclusion. German Credit
+provides too little test-sample precision to establish a stable statistical or economic
+ordering: no paired interval for any metric excludes zero. Lending Club is the clear counterexample. XGBoost and CatBoost
+lead the EBM by about $0.008$ ROC-AUC and by $0.047$--$0.050$ percentage points EMP,
+with both EBM--ensemble contrasts resolved in ROC-AUC and in EMP under test-case
+resampling.
+
+
+EMP was included as a second evaluation dimension because ranking quality alone does not
+capture the asymmetric consequences of credit decisions. On these datasets it largely
+reproduces the statistical evaluation rather than adding an ordering of its own.
+
+The EMP ordering matches the ROC-AUC ordering exactly on Home Credit and Lending
+Club, these are the only two datasets in which an EBM--ensemble contrast resolves a direction. It
+departs from that ordering only where the performance differences are unresolved to
+begin with. Even where a direction does resolve, EMP acts as the more conservative
+measure rather than an independent signal: on Home Credit the EBM--CatBoost contrast
+excludes zero in ROC-AUC but not in EMP. Nowhere does the profit measure reverse a
+direction that discrimination has already resolved.
+
+Its contribution here is therefore not necessarily a second ordering but a second unit. A gap of
+$0.008$ ROC-AUC cannot be weighed against anything on its own, but expressed in percentage
+points of normalised principal, the same gap becomes a quantity an institution can hold
+against the cost of the alternative.
+
+Under the EMP parameterisation, the observed Lending Club difference can be read as a
+modelled economic price. The EBM's EMP is $0.047$--$0.050$ percentage points of
+normalised principal below that of the two ensembles. This corresponds to approximately
+EUR~$0.50$ per EUR~$1{,}000$ of normalised principal, compared with an EMP level of
+about EUR~$24.80$ per EUR~$1{,}000$. The difference therefore amounts to approximately
+$2\%$ of the modelled EMP level.
+
+Because EMP levels are not directly comparable across datasets, the interpretation
+focuses on paired model differences within each dataset. Only Lending Club yields paired
+EBM--ensemble EMP intervals that exclude zero. On Home Credit, the point estimates favour
+the EBM, but both paired difference intervals include zero and neither contrast is resolved
+on Taiwan. Profit-based
+evaluation therefore identifies a modelled economic disadvantage for the EBM in only one
+of four settings, while its direction remains unresolved in the other three.
+
+Because all configurations are tuned to maximise validation ROC-AUC, this high agreement between the metrics is partly induced by the experimental design. The EMP figures therefore serve as an economic lens applied to standard, discrimination-optimised pipelines, quantifying the economic consequences of models chosen solely for their statistical ranking power.
+
+Logistic regression serves an important comparative role by helping to distinguish
+intrinsic interpretability from the restrictions of a linear functional form. Although
+it attains the highest threshold-metric point estimates on the small German Credit
+dataset, it is consistently less competitive with the non-linear models across the 
+larger datasets. This pattern shows that direct inspectability alone is insufficient 
+for model choice. An interpretable model must also provide sufficient functional 
+flexibility for the empirical setting. The EBM therefore provides the more informative 
+test of whether inherent interpretability can exist alongside competitive performance.
+
+\section{Explanation Stability, Agreement and Interpretability}
+
+Under case resampling, top-ten membership is high across all four pipelines and partly
+compressed by the small feature vocabularies of German Credit and Taiwan. The more
+discriminating rank-interval widths lead to the same substantive conclusion: neither LR
+nor the EBM shows a consistent stability advantage over XGBoost and CatBoost.
+
+Cross-model agreement provides a different form of evidence. Top-ten Jaccard indicates
+partial overlap between the features prioritised by the pipelines, while the complete
+rankings place the EBM close to the two ensembles; logistic regression diverges most
+strongly on Taiwan. This agreement indicates similarity in global feature priorities,
+but it does not identify a correct or faithful ranking, because attribution allocation
+depends on the fitted model, explainer semantics and feature dependence
+\citep{aasExplainingIndividualPredictions2021}.
+
+For model choice, the explanation measures therefore add two qualifications. They
+provide no stability-based reason to prefer the intrinsically interpretable pipelines,
+but they show that the EBM and the ensembles often emphasise similar source features.
+The relevant interpretability distinction remains structural: LR and the EBM expose
+components of their fitted prediction functions, whereas XGBoost and CatBoost require a
+separate post-hoc explanation computation
+\citep{rudinStopExplainingBlack2019a}. The case for the EBM consequently rests on this
+direct inspectability together with its observed performance, not on superior measured
+attribution stability.
+
+
+\section{Sensitivity to Training Size and Time}
+
+The learning curves show that relative model performance changes with training-set
+size under the fixed configurations examined. XGBoost and CatBoost gain more
+ROC-AUC as the sample grows. The EBM remains ahead of logistic regression, while
+the ensembles close or reverse their initial deficits. The EBM is therefore more
+competitive at smaller sample sizes in these experiments, whereas the boosted-tree
+ensembles benefit more from additional data. Across-refit top-ten Jaccard overlap
+does not increase monotonically, indicating that larger training samples do not
+consistently produce more reproducible global feature rankings.
+
+The out-of-time evaluation yields lower ROC-AUC estimates for all Lending Club
+pipelines but preserves their random-split ordering: XGBoost and CatBoost lead,
+followed by the EBM and logistic regression. The same point-estimate hierarchy
+appears for EMP. The chronological evaluation therefore reproduces the central
+Lending Club pattern in both discrimination and economic performance. The
+EBM--ensemble ROC-AUC gap is nevertheless narrower than under the random split:
+the direction of the observed difference recurs, while its magnitude changes.
+Taken together, these analyses show that key elements of the model ordering remain across alternative settings: the EBM remains ahead of logistic regression across
+the evaluated training sizes, and the Lending Club random-split ordering is
+reproduced under temporal evaluation.
+
+
+\section{Relation to Prior Findings}
+
+\citet{bahloolPerformanceFairnessExplainability2026} characterise the
+performance--explainability trade-off in credit scoring as more often assumed than
+empirically quantified, because performance and explainability are commonly studied
+separately. The present findings support that diagnosis. An ensemble advantage over the EBM resolves only on Lending Club, whereas
+one ROC-AUC comparison on Home Credit resolves in the opposite direction and the
+remaining comparisons show no consistent ensemble advantage. This establishes no equivalence. It does shift the burden of argument: a claim that
+intrinsic interpretability entails a predictive cost requires evidence in the setting
+where it is made and comparison with functionally flexible glass-box alternatives
+rather than linear baselines alone.
+
+The observed magnitudes are broadly consistent with the closest quantitative reference
+points. Across 45 tabular datasets,
+\citet{amekoeExploringAccuracyInterpretability2024b} report an average relative
+accuracy loss below $4\%$ for intelligible models.
+\citet{dessainCostExplainabilityAI2023} report fifteen to twenty basis points of
+return between their best black-box and interpretable models, against about five
+basis points of normalised principal here. These quantities are not directly
+comparable. The first measures accuracy across a wider tabular benchmark, while
+the second measures realised return rather than EMP. They nevertheless support the
+same broader interpretation: where a performance cost exists, its magnitude must be
+evaluated in context rather than inferred from the model family alone.
+
+The Lending Club results contextualise the findings of \citet{schwartzEnhancingMLModels2025}, 
+who report the EBM narrowly outperforming an XGBoost baseline on the same raw dataset 
+(ROC-AUC $0.674$ versus $0.669$). The present study instead yields a consistent but small 
+ensemble advantage in both ROC-AUC and economic value. This contrast does not necessarily 
+indicate contradictory model behaviour. Rather, it highlights how sensitive relative 
+performance is to specific pipeline configurations and empirical contexts. Whether the 
+EBM slightly leads or slightly trails the tree ensembles ultimately depends on design 
+choices such as feature selection and evaluation criteria. The shared conclusion across 
+both pipelines, however, is that the EBM performs at a highly competitive level. It 
+therefore emerges not as a mere transparency-oriented fallback, but as a primary model 
+candidate whose exact rank must be established in the target context.
+
+\section{Regulatory Context}\label{sec:regulatory-reading}
+
+The framework set out in Section~\ref{sec:regulatory} does not translate the
+applicable legal requirements into a preference for a particular model family.
+Neither the AI Act nor the GDPR makes an EBM compliant by construction or a
+boosted ensemble non-compliant because its explanations are generated post hoc.
+The legal assessment instead concerns the deployed system, including its intended
+use, documentation, data governance, human oversight, monitoring and the
+information provided to affected persons. Model architecture may supply relevant
+technical evidence but cannot replace this system-level assessment.
+
+The evaluated model families nevertheless differ structurally in how explanation
+evidence is generated. Logistic regression and the EBM expose components of their
+fitted prediction functions, whereas XGBoost and CatBoost require a separate
+TreeSHAP computation. As \citet{liptonMythosModelInterpretability2018} stresses,
+a post-hoc explanation is not equivalent to direct transparency of the fitted
+model. This distinction affects how model behaviour can be documented and
+examined, but it alone establishes neither legal sufficiency nor a ranking of
+compliance effort. Direct inspectability does not prove compliance, while reliance
+on TreeSHAP does not prove non-compliance.
+
+The empirical metrics reported in this thesis may inform the assessment of a
+deployed system, but none constitutes a statutory threshold or conformity finding.
+Accordingly, neither architecture is excluded on model-family grounds, and this
+thesis does not assess whether any evaluated pipeline satisfies the applicable
+requirements.
+
+\section{Implications for Model Choice}
+
+The central implication is procedural: model selection should not begin from a
+presumed performance penalty for intrinsic interpretability. While 
+\citet{amekoeExploringAccuracyInterpretability2024b} recommend incorporating inherently 
+interpretable models primarily when transparency is a key constraint, the marginality of 
+the trade-offs demonstrated in this thesis suggests that the EBM should enter the 
+initial candidate set alongside boosted-tree ensembles from the outset. Rather than 
+serving as a transparency-oriented fallback after a black-box model has already 
+been selected, the glass-box model must be evaluated on its own predictive and 
+economic merits. Its direct inspectability is an additional structural property, 
+not its sole justification.
+
+
+\section{Limitations}\label{sec:limitations}
+
+Several design choices constrain the generalisability of the findings and define
+the limits of the evaluated empirical setup.
+
+\paragraph{Data and population.}
+All four datasets contain only \emph{booked} loans. The findings are therefore
+conditional on historical acceptance decisions and do not evaluate model performance
+for the through-the-door applicant population. No reject-inference procedure was
+applied. Moreover, the datasets are historical public benchmarks and represent
+contemporary operational credit scoring only partially. Changes in lending products,
+underwriting policies, macroeconomic conditions, applicant behaviour and the
+availability of decision-time information may alter both predictive relationships and
+relative model performance. The findings should therefore be interpreted as evidence
+under the evaluated benchmark conditions rather than as expected performance for a
+current institution-specific applicant population. No group-wise fairness evaluation was conducted, so the results support no conclusions
+about disparate outcomes across applicant groups.
+
+\paragraph{Model coverage.}
+Each side of the comparison rests on limited model families. The flexible side is
+represented by gradient-boosted trees in two implementations, chosen because they are
+the documented reference for tabular credit data, but neural architectures, random
+forests and other flexible learners were not evaluated. The intrinsically interpretable
+side is represented by one non-linear model, so the within-family check available for
+the ensembles has no counterpart there. Findings on the EBM consequently may not transfer
+to other interpretable classes and
+the conclusions concern the four evaluated pipelines rather than the model classes as a
+whole.
+
+\paragraph{Feature representation.}
+Feature encoding is not neutral between model families. Ordinal encodings represent
+ordered variables in a form that the models may use differently, while aggregating
+one-hot encoded columns into source-feature importances can affect the resulting
+attribution rankings. These effects were not isolated experimentally. The reported
+comparisons therefore partly reflect interactions between the algorithms and the
+chosen feature representation rather than model-class differences alone.
+
+\paragraph{Model selection and tuning.}
+All configurations were selected to maximise validation ROC-AUC. The EMP results
+therefore describe the economic performance of pipelines selected for their overall
+discriminatory ability rather than pipelines optimised directly for expected profit.
+These objectives need not select the same configuration: ROC-AUC evaluates ranking
+across the full range of decision thresholds, whereas EMP rewards ranking performance
+in the regions that are economically relevant under its assumed returns, losses and
+class prevalence. A configuration with a slightly lower ROC-AUC could consequently
+produce a higher EMP. Direct EMP-based tuning might therefore change
+both the selected configurations and the relative ordering of the model families. The
+profit-based comparison is conditional on the discrimination-first selection strategy
+and does not establish which models would perform best under direct economic
+optimisation.
+
+\paragraph{Uncertainty and temporal coverage.}
+The headline results rest on one train--test split per dataset. The paired bootstrap
+quantifies test-set sampling uncertainty conditional on the fitted pipelines. It does
+not propagate uncertainty from alternative splits, repeated model selection or
+alternative explainer reference samples. No uncertainty intervals were calculated for
+between-pipeline differences in attribution-ranking stability, so their relative
+ordering remains descriptive.
+
+Out-of-time evaluation was possible only for Lending Club and uses a single
+chronological design rather than repeated rolling-origin assessments. It is also
+subject to maturity-dependent censoring because later cohorts contain a smaller
+proportion of loans with resolved outcomes. The temporal analysis therefore cannot
+separate changes caused via temporal drift from those caused by changing outcome
+availability, nor does it establish that the observed ordering persists across
+successive origination cohorts or under changing market conditions.
+
+\paragraph{Metrics and explanations.}
+EMP remains conditional on the assumed return, loss-given-default distribution and
+class prevalence. The use of a common loss distribution and partly standardised return
+assumptions enables a consistent experimental comparison across the datasets, but it
+does not reproduce the specific economics of each credit product or lending
+institution. Product-specific estimates of returns and loss severity could shift the
+economically relevant operating region and thereby change not only absolute EMP levels,
+but also the pairwise differences and potentially the model ordering. The reported EMP
+results therefore describe economic performance under the stated assumptions rather
+than realised portfolio profit or a definitive profitability ranking
+\citep{xuProfitRiskdrivenCredit2024}.
+
+The explanation analysis combines model-specific methods with different reference
+constructions and decomposition rules. Its results consequently describe
+model--explainer pipelines rather than model properties alone. Attribution-ranking
+stability measures the reproducibility of global rankings under case resampling. It
+does not test whether those rankings faithfully represent the features governing the
+fitted model's predictions. Human intelligibility and the usefulness of local
+explanations to credit decision-makers or applicants were likewise not evaluated.
+
+\paragraph{Evidence base.}
+The closest prior comparison, \citet{schwartzEnhancingMLModels2025}, is a preprint. It
+was retained because it is the only identified study evaluating the EBM against
+XGBoost on Lending Club, and omitting the closest precedent would have left the
+comparison without a direct reference point. Its reported values should nevertheless be
+treated as unverified. Two circumstances limit the resulting reliance. First, the
+preprint enters the discussion as a contrast rather than as support: it reports the EBM
+narrowly ahead of XGBoost, whereas the present study finds a small ensemble advantage on
+the same dataset. Second, the broader interpretation that flexible interpretable models
+can be competitive is carried by peer-reviewed evidence
+\citep{amekoeExploringAccuracyInterpretability2024b}.
+
+
+\section{Future Work}\label{sec:future}
+
+A deployment-oriented extension should evaluate the pipelines on current institutional
+credit data collected at a consistent decision point. Reject-inference and sensitivity
+analyses could examine whether the relative model performance extends beyond the booked
+population, while prespecified group-fairness
+analyses could test whether the observed performance differences persist across
+relevant applicant groups. Product-specific
+estimates of returns, loss severity and class prevalence would additionally indicate
+whether the economic ordering obtained under the standardised EMP assumptions transfers
+to operational portfolios.
+
+Repeating the full pipeline across independently drawn data partitions would propagate
+sources of uncertainty held fixed in the present design and permit direct estimation of
+between-pipeline differences in attribution-ranking stability.
+
+EMP-based or
+multi-objective hyperparameter selection could test whether discrimination-first tuning
+conceals configurations with preferable economic trade-offs. Temporal validation also
+warrants extension to additional datasets with reliable origination timestamps and
+sufficiently mature outcomes.
+
+Extending the model set would test how broadly the observed performance pattern applies.
+Additional glass-box approaches could show whether the EBM's competitiveness is specific
+to its architecture or extends to other intrinsically interpretable models. Including
+flexible predictors beyond boosted trees would likewise test whether the findings hold
+against a larger set of black-box alternatives.
+
+Explanation evaluation should distinguish stability from faithfulness and practical
+usefulness. Retraining- or perturbation-based tests designed to limit unrealistic
+out-of-distribution inputs could assess whether the attributed features accurately
+represent the fitted model's predictive behaviour
+\citep{zhengFFidelityRobustFramework2025}. Local explanations could then be evaluated
+with credit decision-makers and affected applicants to determine whether they are
+understandable, decision-relevant and useful for understanding or contesting individual
+outcomes \citep{nautaAnecdotalEvidenceQuantitative2023}.
+
+Finally, a controlled organisational study could examine whether direct inspectability
+changes the resources required to document, validate, maintain and communicate a
+credit-scoring system relative to a separate post-hoc explanation pipeline. Relevant
+outcomes include development and validation time, documentation obligations,
+explainer-specific failure modes and stakeholder comprehension. The structural and
+regulatory differences between inherent and post-hoc explanations motivate this
+comparison but do not predetermine its result.
+

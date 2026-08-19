@@ -1,0 +1,30 @@
+\section*{Abstract -- English}
+
+Credit scoring involves a potential trade-off between predictive performance and model explainability. Flexible boosted-tree ensembles can capture complex relationships but require post-hoc explanations, whereas intrinsically interpretable models expose their fitted prediction functions more directly. This thesis examines whether this structural difference is accompanied by a consistent performance disadvantage and what the findings show for model choice in the EU regulatory context.
+
+Logistic regression and the Explainable Boosting Machine (EBM) were compared with XGBoost and CatBoost across four public credit datasets. The evaluation considered predictive and profit-based performance, supplemented by the stability and agreement of global feature rankings. Additional analyses examined whether the recorded patterns changed with training-set size or under chronological evaluation.
+
+The results showed no uniform performance disadvantage for the EBM. A predictive and economic advantage for the boosted ensembles emerged on Lending Club, but this pattern did not recur across the other datasets. Profit-based results broadly reinforced the predictive comparison. The explanation analysis also showed no consistent stability advantage for the intrinsically interpretable models, although the EBM and the boosted ensembles frequently prioritised similar features. The additional analyses indicated that the magnitude of the differences varied across empirical settings, while the central Lending Club ordering remained unchanged under temporal validation.
+
+These findings establish neither equivalence between model families nor regulatory compliance. They support evaluating functionally flexible glass-box models such as the EBM as primary candidates alongside boosted ensembles rather than treating them solely as transparency-oriented alternatives. Regulatory conformity ultimately depends on the complete deployed system rather than on model architecture alone.
+
+\textbf{Keywords:} credit scoring, explainable AI, Explainable Boosting Machine, Expected Maximum Profit, EU AI Act
+
+
+\begin{otherlanguage}{ngerman}
+
+\section*{Abstrakt -- Deutsch}
+
+Bei der Kreditwürdigkeitsprüfung besteht ein potenzieller Zielkonflikt zwischen Vorhersageleistung und Erklärbarkeit. Flexible Boosted-Tree-Ensembles können komplexe Zusammenhänge abbilden, benötigen jedoch nachgelagerte Erklärungsverfahren. Intrinsisch interpretierbare Modelle legen ihre gelernte Vorhersagefunktion dagegen unmittelbar offen. Diese Arbeit untersucht, ob dieser strukturelle Unterschied mit einem konsistenten Leistungsnachteil einhergeht und welche Bedeutung die Ergebnisse für die Modellauswahl im regulatorischen Kontext der Europäischen Union haben.
+
+Hierzu wurden die logistische Regression und die Explainable Boosting Machine (EBM) mit XGBoost und CatBoost auf vier öffentlich verfügbaren Kreditdatensätzen verglichen. Die Evaluation berücksichtigte die prädiktive und gewinnorientierte Leistung, ergänzt um die Stabilität und Übereinstimmung globaler Merkmalsrangfolgen. Zusätzliche Analysen untersuchten, ob sich die beobachteten Muster mit zunehmender Größe der Trainingsdaten oder bei zeitlich getrennter Validierung veränderten.
+
+Die Ergebnisse zeigten keinen konsistenten Leistungsnachteil für die EBM. Im Lending-Club-Datensatz ergab sich ein prädiktiver und wirtschaftlicher Vorteil für die Boosted-Tree-Ensembles, der sich auf den übrigen Datensätzen jedoch nicht konsistent wiederholte. Die gewinnorientierte Evaluation bestätigte weitgehend die Muster des prädiktiven Vergleichs. Auch bei der Stabilität der Merkmalsrangfolgen zeigte sich kein konsistenter Vorteil der intrinsisch interpretierbaren Modelle, obwohl die EBM und die Ensembles häufig ähnliche Merkmale priorisierten. Die zusätzlichen Analysen zeigten, dass die Größe der Unterschiede von den jeweiligen Untersuchungsbedingungen abhing, während die Modellreihenfolge auf Lending Club auch bei der zeitlichen Validierung erhalten blieb.
+
+Die Befunde belegen weder eine exakte Gleichwertigkeit der Modellfamilien noch eine regulatorische Konformität. Sie sprechen aber dafür, funktional flexible Glass-Box-Modelle wie die EBM von Beginn an neben Boosted-Tree-Ensembles als eigenständige Modellkandidaten zu evaluieren und nicht lediglich als transparenzorientierte Alternative zu behandeln. Die regulatorische Konformität muss letztlich auf Ebene des gesamten eingesetzten Systems und nicht allein anhand der Modellarchitektur beurteilt werden.
+
+\textbf{Stichworte:} Kreditwürdigkeitsprüfung, erklärbare künstliche Intelligenz, Explainable Boosting Machine, Attributionsstabilität, Expected Maximum Profit, EU AI Act
+
+
+\end{otherlanguage}
+
